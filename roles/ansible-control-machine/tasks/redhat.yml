@@ -1,54 +1,32 @@
 ---
-- name: RedHat | Installing EPEL Repo (RedHat)
+# Need to add EPEL Repo for python2 pip
+- name: redhat | Adding EPEL Repo
   yum:
-    name: "epel-release"
-    state: "present"
-  when: >
-        ansible_distribution != "Fedora"
+    name: epel-release
+    state: present
+  become: true
+  register: result
+  until: result is successful
+  when:
+    - ansible_distribution != "Fedora"
+    - ansible_python_version is version('3', '<')
 
 - name: RedHat | Installing Pre-Reqs (RedHat)
   yum:
-    name: "{{ item }}"
+    name: "{{ control_machine_pre_req_packages }}"
     state: present
-  with_items:
-    - 'git'
-    - 'libffi-devel'
-    - 'openssl-devel'
-    - 'python-crypto'
-    - 'python-devel'
-    - 'python-setuptools'
-  when: >
-        ansible_distribution != "Fedora"
+  become: true
+  register: result
+  until: result is successful
+  when:
+    - ansible_distribution != "Fedora"
 
 - name: RedHat | Installing Pre-Reqs (Fedora)
   dnf:
-    name: "{{ item }}"
-    state: "present"
-  with_items:
-    - 'git'
-    - 'gmp-devel'
-    - 'libffi-devel'
-    - 'openssl-devel'
-    - 'python-crypto'
-    - 'python-devel'
-    - 'python-dnf'
-    - 'python-setuptools'
-    - 'redhat-rpm-config'
-  when: >
-        ansible_distribution == "Fedora"
-
-- name: RedHat | Installing Python-Pip
-  yum:
-    name: "python-pip"
-    state: "present"
-  when: >
-        not easy_install_pip and
-        ansible_distribution != "Fedora"
-
-- name: RedHat | Installing Python-Pip
-  dnf:
-    name: "python-pip"
-    state: "present"
-  when: >
-        not easy_install_pip and
-        ansible_distribution == "Fedora"
+    name: "{{ control_machine_pre_req_packages }}"
+    state: present
+  become: true
+  register: result
+  until: result is successful
+  when:
+    - ansible_distribution == "Fedora"

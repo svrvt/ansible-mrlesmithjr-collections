@@ -1,11 +1,9 @@
 ---
 galaxy_info:
   author: Larry Smith Jr.
-  description: An [Ansible](https://www.ansible.com) role to install/configure [GitLab Runner](https://docs.gitlab.com/runner/)
-
-  license: license (MIT)
-
-  min_ansible_version: 1.2
+  description: Ansible role to install/configure GitLab runner
+  license: MIT
+  min_ansible_version: 2.8
 
   platforms:
     - name: Ubuntu
@@ -19,6 +17,5 @@ galaxy_info:
         - stretch
 
   galaxy_tags:
-    - ci/cd
-
+    - development
 dependencies: []

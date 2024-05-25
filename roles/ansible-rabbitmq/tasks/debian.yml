@@ -1,63 +1,66 @@
 ---
 - name: debian | Adding Pre-Reqs
-  apt:
-    name: ['gnupg2']
+  ansible.builtin.apt:
+    name:
+      - gnupg2
+      - apt-transport-https
     state: present
+    update_cache: true
   become: true
   register: result
   until: result is successful
 
-- name: debian | adding RabbitMQ public GPG key to the apt repo
-  apt_key:
+- name: debian | adding RabbitMQ repo public GPG key to the apt repo
+  ansible.builtin.apt_key:
     url: "{{ rabbitmq_debian_repo_key }}"
     state: present
   become: true
   register: result
   until: result is successful
 
+- name: debian | adding RabbitMQ team public GPG key to the apt repo
+  ansible.builtin.apt_key:
+    keyserver: keys.openpgp.org
+    id: "{{ rabbitmq_debian_team_key }}"
+    state: present
+  become: true
+  register: result
+  until: result is successful
+
 - name: debian | adding RabbitMQ repo
-  apt_repository:
+  ansible.builtin.apt_repository:
     repo: "{{ rabbitmq_debian_repo }}"
     state: present
   become: true
   register: result
   until: result is successful
 
-- name: debian | add Rabbitmq erlang repo key
-  apt_key:
-    url: https://bintray.com/user/downloadSubjectPublicKey?username=rabbitmq-erlang
+- name: debian | adding RabbitMQ relang repo public GPG key to the apt repo
+  ansible.builtin.apt_key:
+    url: "{{ rabbitmq_debian_erlang_repo_key }}"
     state: present
   become: true
   register: result
   until: result is successful
-  when: rabbitmq_debian_erlang_from_rabbit
 
 - name: debian | add Rabbitmq erlang repo
-  apt_repository:
-    repo: deb https://dl.bintray.com/rabbitmq-erlang/debian {{ ansible_distribution_release }} erlang
+  ansible.builtin.apt_repository:
+    repo: "{{ rabbitmq_debian_erlang_repo }}"
     state: present
   become: true
   when: rabbitmq_debian_erlang_from_rabbit
 
 - name: debian | installing RabbitMQ server
-  apt:
-    name: ['rabbitmq-server']
+  ansible.builtin.apt:
+    name:
+      - rabbitmq-server{{ (rabbitmq_debian_version_defined and rabbitmq_debian_version is defined) | ternary(['=', rabbitmq_debian_version] | join(''), '') }}
     state: present
   become: true
   register: result
   until: result is successful
-  with_items:
-    - rabbitmq-server{{ (rabbitmq_debian_version is defined) | ternary(['=',rabbitmq_debian_version] | join(''),'') }}
-
-- name: debian | enabling the RabbitMQ Management Console
-  rabbitmq_plugin:
-    names: rabbitmq_management
-    state: enabled
-  become: true
-  notify: restart rabbitmq-server
 
 - name: debian | ensuring that the RabbitMQ service is running
-  service:
+  ansible.builtin.service:
     name: rabbitmq-server
     state: started
     enabled: yes

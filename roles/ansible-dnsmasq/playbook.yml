@@ -1,8 +1,7 @@
 ---
-- hosts: all
-  become: true
-  vars:
-    - dnsmasq_config: true
-  roles:
-    - role: ansible-dnsmasq
+- name: Example Playbook
+  hosts: all
   tasks:
+    - name: Include ansible-dnsmasq
+      ansible.builtin.include_role:
+        name: ansible-dnsmasq

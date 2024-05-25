@@ -8,6 +8,9 @@ no-resolv
 {% if not dnsmasq_poll_etc_resolv_conf %}
 no-poll
 {% endif %}
+{% if dnsmasq_disabled_negcache %}
+no-negcache
+{% endif %}
 {% if dnsmasq_bind_interfaces is defined and dnsmasq_bind_interfaces != [] %}
 {%   for item in dnsmasq_bind_interfaces %}
 interface={{ item }}
@@ -69,7 +72,8 @@ dhcp-host={{ item['mac_address']|join(',') }}{% if item['name'] is defined %},{{
 {%   endif %}
 {%   if dnsmasq_dhcp_options is defined and dnsmasq_dhcp_options != [] %}
 {%     for item in dnsmasq_dhcp_options %}
-dhcp-option=option:{{ item['option'] }},{{ item['value']|join(',') }}
+dhcp-option=option:{{ item['option'] }}{% if item['value'] is defined %},{{ item['value']|join(',') }}{% endif %}
+
 {%     endfor %}
 {%   endif %}
 {%   if dnsmasq_dhcp_scopes is defined and dnsmasq_dhcp_scopes != [] %}

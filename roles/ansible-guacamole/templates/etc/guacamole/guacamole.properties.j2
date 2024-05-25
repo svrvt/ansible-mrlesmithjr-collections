@@ -1,13 +1,137 @@
 {{ ansible_managed | comment }}
 auth-provider: {{ guacamole_auth_provider }}
-# basic-user-mapping: /etc/guacamole/user-mapping.xml
-# guacd-hostname: {{ ansible_hostname }}
-# guacd-port: {{ guacamole_server_port }}
-user-mapping: /etc/guacamole/user-mapping.xml
+{# Basic User Mapping #}
+{% if guacamole_basic_user_mapping is defined and guacamole_users is defined and guacamole_users | list | length >= 1 %}
+basic-user-mapping: {{ guacamole_basic_user_mapping }}
+{% endif %}
+{# Network Configuration #}
+guacd-hostname: {{ guacamole_server_hostname }}
+{% if guacamole_server_port is defined and guacamole_server_port|int %}
+guacd-port: {{ guacamole_server_port }}
+{% endif %}
+{# MySQL Configuration #}
 {% if guacamole_mysql_auth %}
 mysql-hostname: {{ guacamole_mysql_db['host'] }}
 mysql-port: {{ guacamole_mysql_db['port'] }}
 mysql-database: {{ guacamole_mysql_db['name'] }}
 mysql-username: {{ guacamole_mysql_db['username'] }}
 mysql-password: {{ guacamole_mysql_db['password'] }}
+{% if guacamole_mysql_db['sslmode'] is defined %}
+mysql-ssl-mode: {{ guacamole_mysql_db['sslmode'] }}
+{% endif %}
+{% if guacamole_mysql_db['timezone'] is defined %}
+mysql-server-timezone: {{ guacamole_mysql_db['timezone'] }}
+{% endif %}
+{% endif %}
+{# PostGreSQL Configuration #}
+{% if guacamole_postgresql_auth %}
+postgresql-hostname: {{ guacamole_postgresql_db['host'] }}
+postgresql-port: {{ guacamole_postgresql_db['port'] }}
+postgresql-database: {{ guacamole_postgresql_db['name'] }}
+postgresql-username: {{ guacamole_postgresql_db['username'] }}
+postgresql-password: {{ guacamole_postgresql_db['password'] }}
+postgresql-auto-create-accounts: {{ guacamole_postgresql_db['auto-create-accounts'] }}
+{% endif %}
+{# OpenID Configuration #}
+{% if guacamole_openid_auth %}
+openid-authorization-endpoint: {{ guacamole_openid['authorization-endpoint'] }}
+openid-jwks-endpoint: {{ guacamole_openid['jwks-endpoint'] }}
+openid-issuer: {{ guacamole_openid['issuer'] }}
+openid-client-id: {{ guacamole_openid['client-id'] }}
+openid-redirect-uri: {{ guacamole_openid['redirect-uri'] }}
+{% if guacamole_openid['username-claim-type'] is defined %}
+openid-username-claim-type: {{ guacamole_openid['username-claim-type'] }}
+{% endif %}
+{% if guacamole_openid['groups-claim-type'] is defined %}
+openid-groups-claim-type: {{ guacamole_openid['groups-claim-type'] }}
+{% endif %}
+{% if guacamole_openid['scope'] is defined %}
+openid-scope: {{ guacamole_openid['scope'] }}
+{% endif %}
+{% if guacamole_openid['allowed-clock-skew'] is defined %}
+openid-allowed-clock-skew: {{ guacamole_openid['allowed-clock-skew'] }}
+{% endif %}
+{% if guacamole_openid['max-token-validity'] is defined %}
+openid-max-token-validity: {{ guacamole_openid['max-token-validity'] }}
+{% endif %}
+{% if guacamole_openid['max-nonce-validity'] is defined %}
+openid-max-nonce-validity: {{ guacamole_openid['max-nonce-validity'] }}
+{% endif %}
+{% endif %}
+{# Ldap Configuration #}
+{% if guacamole_ldap is defined %}
+{# ldap-hostname is define in ldap-servers.yml to premit multiple ldap server #}
+{% if guacamole_ldap['port'] is defined %}
+ldap-port: {{ guacamole_ldap['port'] }}
+{% endif %}
+{% if guacamole_ldap['encryption_method'] is defined %}
+ldap-encryption-method: {{ guacamole_ldap['encryption_method'] }}
+{% endif %}
+{% if guacamole_ldap['max_search_results'] is defined %}
+ldap-max-search-results: {{ guacamole_ldap['max_search_results'] }}
+{% endif %}
+{% if guacamole_ldap['search_bind_dn'] is defined %}
+ldap-search-bind-dn: {{ guacamole_ldap['search_bind_dn'] }}
+{% endif %}
+{% if guacamole_ldap['search_bind_password'] is defined %}
+ldap-search-bind-password: {{ guacamole_ldap['search_bind_password'] }}
+{% endif %}
+{% if guacamole_ldap['user_base_dn'] is defined %}
+ldap-user-base-dn: {{ guacamole_ldap['user_base_dn'] }}
+{% endif %}
+{% if guacamole_ldap['username_attribute'] is defined %}
+ldap-username-attribute: {{ guacamole_ldap['username_attribute'] }}
+{% endif %}
+{% if guacamole_ldap['member_attribute'] is defined %}
+ldap-member-attribute: {{ guacamole_ldap['member_attribute'] }}
+{% endif %}
+{% if guacamole_ldap['member_attribute_type'] is defined %}
+ldap-member-attribute-type: {{ guacamole_ldap['member_attribute_type'] }}
+{% endif %}
+{% if guacamole_ldap['member_attribute_type'] is defined %}
+{# https://guacamole.apache.org/doc/gug/configuring-guacamole.html#parameter-tokens #}
+ldap-user-attributes: {{ guacamole_ldap['member_attribute_type'] }}
+{% endif %}
+{% if guacamole_ldap['search_filter'] is defined %}
+ldap-user-search-filter: {{ guacamole_ldap['search_filter'] }}
+{% endif %}
+{% if guacamole_ldap['config_base_dn'] is defined %}
+ldap-config-base-dn: {{ guacamole_ldap['config_base_dn'] }}
+{% endif %}
+{% if guacamole_ldap['group_base_dn'] is defined %}
+ldap-group-base-dn: {{ guacamole_ldap['group_base_dn'] }}
+{% endif %}
+{% if guacamole_ldap['group_name_attribute'] is defined %}
+ldap-group-name-attribute: {{ guacamole_ldap['group_name_attribute'] }}
+{% endif %}
+{% if guacamole_ldap['group_search_filter'] is defined %}
+ldap-group-search-filter: {{ guacamole_ldap['group_search_filter'] }}
+{% endif %}
+{% if guacamole_ldap['dereference_aliases'] is defined %}
+ldap-dereference-aliases: {{ guacamole_ldap['dereference_aliases'] }}
+{% endif %}
+{% if guacamole_ldap['follow_referrals'] is defined %}
+ldap-follow-referrals: {{ guacamole_ldap['follow_referrals'] }}
+{% endif %}
+{% if guacamole_ldap['max_referral_hops'] is defined %}
+ldap-max-referral-hops: {{ guacamole_ldap['max_referral_hops'] }}
+{% endif %}
+{% if guacamole_ldap['operation_timeout'] is defined %}
+ldap-operation-timeout: {{ guacamole_ldap['operation_timeout'] }}
+{% endif %}
+{% endif %}
+{# TOTP Configuration #}
+{% if guacamole_totp is defined %}
+{% if guacamole_totp['issuer'] is defined %}
+totp-issuer: {{ guacamole_totp['issuer'] }}
+{% endif %}
+{% if guacamole_totp['digits'] is defined %}
+totp-digits: {{ guacamole_totp['digits'] }}
+{% endif %}
+{% if guacamole_totp['period'] is defined %}
+totp-period: {{ guacamole_totp['period'] }}
+{% endif %}
+{% if guacamole_totp['mode'] is defined %}
+totp-mode: {{ guacamole_totp['mode'] }}
+{% endif %}
 {% endif %}

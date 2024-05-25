@@ -1,47 +1,42 @@
-Role Name
-=========
+# ansible-shorewall
 
 Installs and configures Shorewall firewall (http://shorewall.net)
 
 ## Build Status
 
+### GitHub Actions
+
+![Molecule Test](https://github.com/mrlesmithjr/ansible-shorewall/workflows/Molecule%20Test/badge.svg)
+
+### Travis CI
+
 [![Build Status](https://travis-ci.org/mrlesmithjr/ansible-shorewall.svg?branch=master)](https://travis-ci.org/mrlesmithjr/ansible-shorewall)
 
-Requirements
-------------
+## Requirements
 
-None
+For any required Ansible roles, review:
+[requirements.yml](requirements.yml)
 
-Role Variables
---------------
+## Role Variables
 
 [defaults/main.yml](defaults/main.yml)
 
-Dependencies
-------------
+## Dependencies
 
-None
+## Example Playbook
 
-Example Playbook
-----------------
+[playbook.yml](playbook.yml)
 
-````
-- hosts: all
-  become: true
-  vars:
-  roles:
-    - role: ansible-shorewall
-  tasks:
-````
-License
--------
+## License
 
-BSD
+MIT
 
-Author Information
-------------------
+## Author Information
 
 Larry Smith Jr.
-- @mrlesmithjr
-- http://everythingshouldbevirtual.com
-- mrlesmithjr [at] gmail.com
+
+- [@mrlesmithjr](https://twitter.com/mrlesmithjr)
+- [mrlesmithjr@gmail.com](mailto:mrlesmithjr@gmail.com)
+- [http://everythingshouldbevirtual.com](http://everythingshouldbevirtual.com)
+
+> NOTE: Repo has been created/updated using [https://github.com/mrlesmithjr/cookiecutter-ansible-role](https://github.com/mrlesmithjr/cookiecutter-ansible-role) as a template.

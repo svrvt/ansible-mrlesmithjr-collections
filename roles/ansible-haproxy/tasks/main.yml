@@ -1,49 +1,36 @@
 ---
 # tasks file for ansible-haproxy
-- include: debian.yml
-  tags:
-    - haproxy
+- name: Debian specific tasks
+  ansible.builtin.include_tasks: debian.yml
   when: ansible_os_family == "Debian"
 
-- include: redhat.yml
-  tags:
-    - haproxy
+- name: RHEL specific tasks
+  ansible.builtin.include_tasks: redhat.yml
   when: ansible_os_family == "RedHat"
 
-- include: opensuse.yml
-  tags:
-    - haproxy
+- name: OpenSUSE specific tasks
+  ansible.builtin.include_tasks: opensuse.yml
   when: ansible_os_family == "openSUSE Leap"
 
-- debug: var=haproxy_load_balancer_ssl
-  tags:
-    - haproxy
+- name: Debug HAProxy SSL
+  ansible.builtin.debug:
+    var: haproxy_ssl
 
-- include: ssl.yml
-  tags:
-    - haproxy
-    - haproxy_config
-    - haproxy_ssl
-  when: >
-        (haproxy_load_balancer_ssl is defined and
-          haproxy_load_balancer_ssl != []) and
-        haproxy_load_balancer_ssl['enabled']
+- name: Manage SSL
+  ansible.builtin.include_tasks: ssl.yml
+  when:
+    - haproxy_ssl is defined
+    - haproxy_ssl != []
+    - haproxy_ssl.enabled|bool
 
-- include: config_haproxy.yml
-  tags:
-    - haproxy
-    - haproxy_config
-    - haproxy_ssl
-  when: >
-        haproxy_config is defined and
-        haproxy_config
+- name: Configure HAProxy
+  ansible.builtin.include_tasks: config_haproxy.yml
+  when:
+    - haproxy_config is defined
+    - haproxy_config|bool
 
-- name: Allowing Running HAProxy Instances To Bind To A VIP For Failover
-  sysctl:
-    name: "net.ipv4.ip_nonlocal_bind"
-    value: 1
-    state: "present"
-    reload: yes
-  become: true
-  tags:
-    - haproxy
+- name: Manage services
+  ansible.builtin.include_tasks: service.yml
+
+- name: Manage system settings
+  ansible.builtin.include_tasks: sysctl.yml

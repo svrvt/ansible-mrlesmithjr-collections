@@ -1,23 +1,10 @@
 ---
-- name: debian | adding cacti db user for monitoring
-  mysql_user:
-    name: "{{ cacti_db_user }}"
-    password: "{{ cacti_db_password }}"
+- name: cacti_monitoring | adding cacti db user for monitoring
+  community.mysql.mysql_user:
     host: "{{ cacti_server }}"
-    priv: "*.*:SUPER,PROCESS"
-    state: "present"
-  become: true
-  tags:
-    - cacti_monitoring
-  run_once: true
-  when: >
-        cacti_server is defined
-
-- name: debian | adding cacti db user for monitoring
-  mysql_user:
+    login_unix_socket: "{{ mariadb_login_unix_socket | default(omit) }}"
     name: "{{ cacti_db_user }}"
     password: "{{ cacti_db_password }}"
-    host: "{{ cacti_server_fqdn }}"
     priv: "*.*:SUPER,PROCESS"
     state: "present"
   become: true
@@ -25,4 +12,19 @@
     - cacti_monitoring
   run_once: true
   when: >
-        cacti_server_fqdn is defined
+    cacti_server is defined
+
+- name: cacti_monitoring | adding cacti db user for monitoring
+  community.mysql.mysql_user:
+    host: "{{ cacti_server_fqdn }}"
+    login_unix_socket: "{{ mariadb_login_unix_socket | default(omit) }}"
+    name: "{{ cacti_db_user }}"
+    password: "{{ cacti_db_password }}"
+    priv: "*.*:SUPER,PROCESS"
+    state: "present"
+  become: true
+  tags:
+    - cacti_monitoring
+  run_once: true
+  when: >
+    cacti_server_fqdn is defined

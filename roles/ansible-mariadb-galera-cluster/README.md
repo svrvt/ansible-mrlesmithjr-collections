@@ -10,7 +10,6 @@
     -   [Vagrant](#vagrant)
     -   [Role Variables](#role-variables)
     -   [Dependencies](#dependencies)
-        -   [Ansible roles](#ansible-roles)
     -   [Example Playbook](#example-playbook)
     -   [License](#license)
     -   [Author Information](#author-information)
@@ -21,29 +20,10 @@
 
 An [Ansible](https://www.ansible.com) role to install/configure a [MariaDB-Galera Cluster](https://mariadb.com/kb/en/mariadb/what-is-mariadb-galera-cluster/)
 
-## Build Status
-
-[![Build Status](https://travis-ci.org/mrlesmithjr/ansible-mariadb-galera-cluster.svg?branch=master)](https://travis-ci.org/mrlesmithjr/ansible-mariadb-galera-cluster)
-
 ## Requirements
 
-None
-
-## Vagrant
-
-Spin up a test 3-node cluster using Vagrant....
-
-```bash
-git clone https://github.com/mrlesmithjr/ansible-mariadb-galera-cluster.git
-cd Vagrant
-vagrant up
-```
-
-When you are done testing tear it all down....
-
-```bash
-./cleanup.sh
-```
+- Collections:
+  - community.mysql
 
 ## Role Variables
 
@@ -51,9 +31,7 @@ When you are done testing tear it all down....
 
 ## Dependencies
 
-### Ansible roles
-
--   [ansible-etc-hosts](https://github.com/mrlesmithjr/ansible-etc-hosts)
+None
 
 ## Example Playbook
 
@@ -67,6 +45,8 @@ MIT
 
 Larry Smith Jr.
 
--   @mrlesmithjr
--   <http://everythingshouldbevirtual.com>
--   mrlesmithjr [at] gmail.com
+- [@mrlesmithjr](https://twitter.com/mrlesmithjr)
+- [mrlesmithjr@gmail.com](mailto:mrlesmithjr@gmail.com)
+- [http://everythingshouldbevirtual.com](http://everythingshouldbevirtual.com)
+
+<a href="https://www.buymeacoffee.com/mrlesmithjr" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>

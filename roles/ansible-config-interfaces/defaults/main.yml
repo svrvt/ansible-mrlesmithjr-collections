@@ -1,6 +1,8 @@
 ---
 # defaults file for ansible-config-interfaces
 
+config_interface_template: etc/network/interfaces.j2
+
 # Defines if network bonds should be configured as defined
 config_network_bonds: false
 
@@ -198,3 +200,6 @@ ovs_interfaces:
   #   # parameters:
 
 pri_domain_name: example.org
+
+# Install or not lldp
+config_install_lldp: true

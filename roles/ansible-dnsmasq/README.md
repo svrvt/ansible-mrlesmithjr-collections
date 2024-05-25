@@ -1,14 +1,17 @@
-# Role Name
+# ansible-dnsmasq
 
-An [ansible] role to install/configure [dnsmasq]
+Ansible role to install/configure DNSMasq
 
 ## Build Status
 
-[![Build Status](https://travis-ci.org/mrlesmithjr/ansible-dnsmasq.svg?branch=master)](https://travis-ci.org/mrlesmithjr/ansible-dnsmasq)
+### GitHub Actions
+
+![Molecule Test](https://github.com/mrlesmithjr/ansible-dnsmasq/workflows/Molecule%20Test/badge.svg)
 
 ## Requirements
 
-None
+For any required Ansible roles, review:
+[requirements.yml](requirements.yml)
 
 ## Role Variables
 
@@ -16,19 +19,9 @@ None
 
 ## Dependencies
 
-None
-
 ## Example Playbook
 
-```yaml
----
-- hosts: all
-  become: true
-  vars:
-  roles:
-    - role: ansible-dnsmasq
-  tasks:
-```
+[playbook.yml](playbook.yml)
 
 ## License
 
@@ -38,12 +31,10 @@ MIT
 
 Larry Smith Jr.
 
--   [@mrlesmithjr]
--   <http://everythingshouldbevirtual.com>
--   mrlesmithjr [at] gmail.com
+- [@mrlesmithjr](https://twitter.com/mrlesmithjr)
+- [mrlesmithjr@gmail.com](mailto:mrlesmithjr@gmail.com)
+- [http://everythingshouldbevirtual.com](http://everythingshouldbevirtual.com)
 
-[@mrlesmithjr]: https://www.twitter.com/mrlesmithjr
+<a href="https://www.buymeacoffee.com/mrlesmithjr" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
 
-[ansible]: https://ansible.com
-
-[dnsmasq]: http://www.thekelleys.org.uk/dnsmasq/doc.html
+> NOTE: Repo has been created/updated using [https://github.com/mrlesmithjr/cookiecutter-ansible-role](https://github.com/mrlesmithjr/cookiecutter-ansible-role) as a template.

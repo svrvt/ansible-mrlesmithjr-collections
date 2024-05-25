@@ -1,23 +1,26 @@
+---
 galaxy_info:
   author: Larry Smith Jr.
-  description: An [Ansible](https://www.ansible.com) role to install/configure [FRR](https://frrouting.org/)
+  description: Ansible role to install/configure [FRR](https://frrouting.org/)
+  role_name: frr
+  namespace: mrlesmithjr
 
   license: MIT
-
-  min_ansible_version: 2.4
+  min_ansible_version: '7'
 
   platforms:
     - name: Debian
       versions:
-        - jessie
         - stretch
+        - buster
     - name: EL
       versions:
-        - 7
+        - '7'
+        - '8'
     - name: Ubuntu
       versions:
-        - trusty
-        - xenial
+        - bionic
+        - focal
 
   galaxy_tags:
     - networking

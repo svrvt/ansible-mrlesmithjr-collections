@@ -1,42 +1,54 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [ansible-guacamole](#ansible-guacamole)
-  - [Build Status](#build-status)
-  - [Requirements](#requirements)
-    - [If using MySQL for authentication](#if-using-mysql-for-authentication)
-  - [Role Variables](#role-variables)
-  - [Dependencies](#dependencies)
-  - [Example Playbook](#example-playbook)
-  - [License](#license)
-  - [Author Information](#author-information)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # ansible-guacamole
 
-An [Ansible](https://www.ansible.com) role to install/configure [Guacamole](https://guacamole.incubator.apache.org/)
-
-> NOTE: Apache Guacamole is a clientless remote desktop gateway. It supports
-> standard protocols like VNC, RDP, and SSH.
+Ansible role to install/configure Guacamole
 
 ## Build Status
 
-[![Build Status](https://travis-ci.org/mrlesmithjr/ansible-guacamole.svg?branch=master)](https://travis-ci.org/mrlesmithjr/ansible-guacamole)
+### GitHub Actions
+
+![Molecule Test](https://github.com/mrlesmithjr/ansible-guacamole/workflows/Molecule%20Test/badge.svg)
 
 ## Requirements
 
-### If using MySQL for authentication
-
-> NOTE: A working MySQL DB must be available as this role does not install MySQL.
-> The DB, DB user, and DB populated with this role.
-
-The following Ansible role [ansible-mysql](https://github.com/mrlesmithjr/ansible-mysql)
-is what I test with.
+For any required Ansible roles, review:
+[requirements.yml](requirements.yml)
 
 ## Role Variables
 
 [defaults/main.yml](defaults/main.yml)
+
+### TOTP Configuration
+
+To enable Two factor authentification, create a variable `guacamole_totp`:
+```
+guacamole_totp:
+  issuer: 'guacamole.exemple.com'
+  period: 60
+```
+
+### OpenID Configuration
+
+To enable OpenID authentification, create :
+```
+guacamole_openid_auth: true
+guacamole_openid:
+  authorization-endpoint: https://idp.xxx.xx/realms/yyy/protocol/openid-connect/auth
+  jwks-endpoint: https://idp.xxx.xx/realms/yyy/protocol/openid-connect/certs
+  issuer: https://idp.xxx.xx/realms/yyy
+  client-id: remote
+  redirect-uri: https://remote.xxx.xx/guacamole
+```
+
+### guacd Configuration
+
+guacd is the native server-side proxy used by the Apache Guacamole web application. If you wish to deploy Guacamole, or an application using the Guacamole core APIs, you will need a copy of guacd running.
+
+guacd is installed by default. To disable it, set `guacd_config.install` to `false`:
+
+```
+guacd_config:
+  install: false
+```
 
 ## Dependencies
 
@@ -53,5 +65,9 @@ MIT
 Larry Smith Jr.
 
 - [@mrlesmithjr](https://twitter.com/mrlesmithjr)
-- [EverythingShouldBeVirtual](http://everythingshouldbevirtual.com)
 - [mrlesmithjr@gmail.com](mailto:mrlesmithjr@gmail.com)
+- [https://everythingshouldbevirtual.com](https://everythingshouldbevirtual.com)
+
+<a href="https://www.buymeacoffee.com/mrlesmithjr" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+> NOTE: Repo has been created/updated using [https://github.com/mrlesmithjr/cookiecutter-ansible-role](https://github.com/mrlesmithjr/cookiecutter-ansible-role) as a template.

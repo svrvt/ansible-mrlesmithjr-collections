@@ -26,9 +26,6 @@ docker_config_service: false
 # Defines if users defined in docker_users should be added to docker group
 docker_config_users: false
 
-# Defines if various Python based Docker packages should get installed
-docker_manage_python_modules: true
-
 # Defines docker images to be installed
 docker_images:
   []
@@ -154,10 +151,6 @@ docker_opts:
 # define as stable or edge
 docker_release_channel: stable
 
-# Defines if the linux-image-extra-{{ ansible_kernel }} package should get
-# installed (only >= Ubuntu 14.04 and <= 16.04).
-docker_linux_image_extra: true
-
 # Defines if docker memory limits should be added to grub boot loader
 docker_set_grub_memory_limit: true
 
@@ -180,8 +173,13 @@ docker_users: []
 # - vagrant
 
 # Define Docker version to install
+#
 # 1.11.0|1.11.1|1.11.2|1.12.0|1.12.1|1.12.2|1.12.3|1.12.4|1.12.5|1.12.6|1.13.0|1.13.1
 # 17.03.0|17.03.1|17.03.2|17.04.0|17.05.0|17.06.0|17.12.0|18.03.1
+#
+# You may also set docker_version to latest(default)
 # Currently as of 06/03/2017 17.04.0 and 17.05.0 must be installed from the
 # edge channel. Change docker_release_channel: 'edge'
-docker_version: 18.03.1
+#
+# docker_version: 18.03.1
+docker_version: latest

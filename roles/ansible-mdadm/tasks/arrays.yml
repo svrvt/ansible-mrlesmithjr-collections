@@ -11,7 +11,7 @@
 # Creating raid arrays
 # We pass yes in order to accept any questions prompted for yes|no
 - name: arrays | Creating Array(s)
-  shell: "yes | mdadm --create /dev/{{ item.name }} --level={{ item.level }} --raid-devices={{ item.devices|count }} {{ item.devices| join (' ') }}"
+  shell: "yes | mdadm --create /dev/{{ item.name }} --level={{ item.level }} {% if item.level != 1 %}--chunk={{item.chunk_size|default('512K')}}{% endif %} --metadata={{ item.raid_metadata_version | default(1.2) }} --raid-devices={{ item.devices|count }} {{ item.devices| join (' ') }}"
   register: "array_created"
   with_items: '{{ mdadm_arrays }}'
   when: >
@@ -142,15 +142,15 @@
 # Updates initramfs archives in /boot
 - name: arrays | Updating Initramfs
   command: "{{ update_initramfs }}"
-  when: array_removed.changed and ansible_os_family == "Debian"
+  when: array_removed.changed and ansible_facts.os_family == "Debian"
 
 # Updates initramfs archives in /boot
 - name: arrays | Updating Initramfs
   command: "mv /boot/initramfs-$(uname -r).img /boot/initramfs-$(uname -r)-backup.img"
-  when: array_removed.changed and ansible_os_family == "RedHat"
+  when: array_removed.changed and ansible_facts.os_family == "RedHat"
 
 # Updates initramfs archives in /boot
 - name: arrays | Updating Initramfs
   command: "dracut /boot/initramfs-$(uname -r).img $(uname -r)"
-  when: array_removed.changed and ansible_os_family == "RedHat"
+  when: array_removed.changed and ansible_facts.os_family == "RedHat"
 

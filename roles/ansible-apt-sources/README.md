@@ -1,32 +1,9 @@
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
-- [ansible-apt-sources](#ansible-apt-sources)
-  - [Build status](#build-status)
-  - [Role info](#role-info)
-  - [Role purpose](#role-purpose)
-  - [Requirements](#requirements)
-  - [Role Variables](#role-variables)
-  - [Dependencies](#dependencies)
-  - [Example Playbook](#example-playbook)
-  - [License](#license)
-  - [Author Information](#author-information)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
 # ansible-apt-sources
 
-## Build status
-
-[![Build Status](https://travis-ci.org/mrlesmithjr/ansible-apt-sources.svg?branch=master)](https://travis-ci.org/mrlesmithjr/ansible-apt-sources)
-
-## Role info
-
-An [Ansible](https://www.ansible.com) role to configure `/etc/apt/sources.list`
+Ansible role to configure `/etc/apt/sources.list`
 on `Debian/Ubuntu` systems.
 
-## Role purpose
+## Purpose
 
 The purpose of this role is to configure systems `/etc/apt/sources.list`
 consistently or independently.
@@ -34,79 +11,26 @@ consistently or independently.
 > NOTE: This role is **not** intended to manage repositories other than the
 > distribution sources.
 
+## Build Status
+
+### GitHub Actions
+
+![Molecule Test](https://github.com/mrlesmithjr/ansible-apt-sources/workflows/Molecule%20Test/badge.svg)
+
 ## Requirements
 
-None
+For any required Ansible roles, review:
+[requirements.yml](requirements.yml)
 
 ## Role Variables
 
-```yaml
----
-# defaults file for ansible-apt-sources
-# deb or deb-src, indicates the type of archive
-apt_sources_archive_types:
-  - 'deb'
-  - 'deb-src'
-
-# main consists of DFSG-compliant packages, which do not rely on software
-# outside this area to operate. These are the only packages considered part of
-# the Debian distribution.
-#
-# contrib packages contain DFSG-compliant software, but have dependencies not
-# in main (possibly packaged for Debian in non-free).
-#
-# non-free contains software that does not comply with the DFSG.
-#
-# Specific to Debian not Ubuntu
-apt_sources_debian_components:
-  - 'main'
-  - 'contrib'
-  - 'non-free'
-
-# The release class (oldstable, stable, testing, unstable) respectively.
-#
-# Specific to Debian not Ubuntu
-apt_sources_debian_distribution: 'stable'
-
-# Specific to Debian not Ubuntu
-apt_sources_debian_repository_url: 'http://deb.debian.org'
-apt_sources_debian_debug_repository_url: 'http://debug.mirrors.debian.org'
-
-apt_sources_enable_backports: true
-
-apt_sources_enable_proposed: false
-
-apt_sources_enable_security: true
-
-apt_sources_enable_updates: true
-
-apt_sources_enable_debug: false
-
-# Specific to Ubuntu not Debian
-apt_sources_ubuntu_components:
-  - 'main'
-  - 'multiverse'
-  - 'restricted'
-  - 'universe'
-
-# Specific to Ubuntu not Debian
-apt_sources_ubuntu_repository_url: 'http://archive.ubuntu.com'
-```
+[defaults/main.yml](defaults/main.yml)
 
 ## Dependencies
 
-None
-
 ## Example Playbook
 
-```yaml
----
-- hosts: all
-  vars:
-  roles:
-    - role: ansible-apt-sources
-  tasks:
-```
+[playbook.yml](playbook.yml)
 
 ## License
 
@@ -116,6 +40,10 @@ MIT
 
 Larry Smith Jr.
 
--   [@mrlesmithjr](https://www.twitter.com/mrlesmithjr)
--   [EverythingShouldBeVirtual](http://everythingshouldbevirtual.com)
--   mrlesmithjr [at] gmail.com
+- [@mrlesmithjr](https://twitter.com/mrlesmithjr)
+- [mrlesmithjr@gmail.com](mailto:mrlesmithjr@gmail.com)
+- [http://everythingshouldbevirtual.com](http://everythingshouldbevirtual.com)
+
+<a href="https://www.buymeacoffee.com/mrlesmithjr" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+> NOTE: Repo has been created/updated using [https://github.com/mrlesmithjr/cookiecutter-ansible-role](https://github.com/mrlesmithjr/cookiecutter-ansible-role) as a template.

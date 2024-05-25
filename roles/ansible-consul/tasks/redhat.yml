@@ -1,6 +1,6 @@
 ---
 - name: redhat | installing epel repo (RedHat)
-  yum:
+  ansible.builtin.yum:
     name: epel-release
     state: present
   become: true
@@ -9,28 +9,43 @@
   when: ansible_distribution != "Fedora"
 
 - name: redhat | installing dependencies
-  yum:
-    name: ["python-devel", "python-pip"]
+  ansible.builtin.yum:
+    name:
+      - python-devel
+      - python-pip
+      - python-pip
+      - python-requests
+      - python-setuptools
+    state: present
+  become: true
+  register: result
+  until: result is successful
+  when:
+    - ansible_distribution == "CentOS"
+    - ansible_distribution_major_version is version('7', '=')
+
+- name: redhat | installing dependencies
+  ansible.builtin.yum:
+    name:
+      - python3-devel
+      - python3-pip
+      - python3-pip
+      - python3-requests
+      - python3-setuptools
     state: present
   become: true
   register: result
   until: result is successful
   when: ansible_distribution != "Fedora"
 
-- name: redhat | installing add'l dependencies (Fedora)
-  dnf:
-    name: ["jq", "tree", "unzip"]
+- name: redhat | installing add'l dependencies
+  ansible.builtin.package:
+    name:
+      - cronie
+      - jq
+      - tree
+      - unzip
     state: present
   become: true
   register: result
   until: result is successful
-  when: ansible_distribution == "Fedora"
-
-- name: redhat | installing add'l dependencies (Not Fedora)
-  yum:
-    name: ["jq", "tree", "unzip"]
-    state: present
-  become: true
-  register: result
-  until: result is successful
-  when: ansible_distribution != "Fedora"

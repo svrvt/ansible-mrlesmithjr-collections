@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    es_packetbeat_config: true
+  tasks:
+    - name: Include ansible-es-packetbeat
+      include_role:
+        name: ansible-es-packetbeat

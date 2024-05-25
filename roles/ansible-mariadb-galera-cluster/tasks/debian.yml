@@ -1,88 +1,65 @@
 ---
-- include: mysql_root_pw.yml
-
 - name: debian | update package list
-  apt:
-    update_cache: yes
+  ansible.builtin.apt:
+    update_cache: true
     cache_valid_time: 3600
   become: true
 
 - name: debian | installing pre-reqs
-  apt:
-    name: "{{ item }}"
+  ansible.builtin.apt:
+    name: "{{ mariadb_pre_req_packages }}"
     state: "present"
   become: true
-  with_items:
-    - 'apt-transport-https'
-    - 'software-properties-common'
-    - 'python-mysqldb'
-    - 'rsync'
+  loop:
 
-- name: debian | Adding MariaDB Repo Keys
+- name: debian | adding MariaDB Repo Keys
   apt_key:
     keyserver: "{{ mariadb_debian_repo_keyserver }}"
-    id: "0xcbcb082a1bb943db"
+    id: "{{ mariadb_debian_repo_key }}"
     state: "present"
   become: true
-  when: >
-        ansible_distribution == "Debian" or
-        (ansible_distribution == "Ubuntu" and
-        ansible_distribution_version <= '14.04')
+  when: galera_enable_mariadb_repo|bool and not mariadb_debian_repo_key_url is defined
 
-- name: debian | Adding MariaDB Repo Keys
+- name: debian | adding MariaDB Repo Keys
   apt_key:
-    keyserver: "{{ mariadb_debian_repo_keyserver }}"
-    id: "0xF1656F24C74CD1D8"
+    url: "{{ mariadb_debian_repo_key_url }}"
     state: "present"
   become: true
-  when: >
-        (ansible_distribution == "Ubuntu" and
-        ansible_distribution_version >= '16.04')
+  when: galera_enable_mariadb_repo|bool and mariadb_debian_repo_key_url is defined
 
-- name: debian | Pinning MariaDB Repo
-  template:
-    src: "mariadb_repo.j2"
+- name: debian | pinning MariaDB Repo
+  ansible.builtin.template:
+    src: "etc/apt/preferences.d/mariadb.j2"
     dest: "/etc/apt/preferences.d/mariadb"
+    mode: "0644"
   become: true
-  when: galera_enable_mariadb_repo == 'true'
+  when: galera_enable_mariadb_repo|bool
 
 - name: debian | adding mariadb repo
   apt_repository:
     repo: "{{ mariadb_debian_repo }}"
     state: "present"
   become: true
-  when: galera_enable_mariadb_repo == 'true'
+  when: galera_enable_mariadb_repo|bool
 
-- name: redhat | add an overrides file
-  template:
+- name: debian | precreate /etc/mysql/conf.d in case we need to add mariadb_config_overrides file
+  ansible.builtin.file:
+    path: "/etc/mysql/conf.d"
+    state: "directory"
+    mode: 0755
+  become: true
+  when: mariadb_config_overrides is defined
+
+- name: debian | add an overrides file
+  ansible.builtin.template:
     src: "etc/mariadb_overrides.cnf.j2"
-    dest: "/etc/my.cnf.d/overrides.cnf"
+    dest: "/etc/mysql/conf.d/overrides.cnf"
+    mode: "0644"
   become: true
   when: mariadb_config_overrides is defined
 
 - name: debian | installing mariadb-galera packages
-  apt:
-    name: "{{ item }}"
-    state: "present"
-  become: true
-  with_items:
-    - 'mariadb-server'
-    # - 'galera-3'
-  when: galera_enable_mariadb_repo == 'true'
-
-- name: debian | configuring root my.cnf
-  template:
-    src: "root/my.cnf.j2"
-    dest: "/root/.my.cnf"
-    owner: "root"
-    group: "root"
-    mode: "u=rw,g=,o="
-  become: true
-
-- name: debian | adding debian-sys-maintenance permissions to mysql
-  mysql_user:
-    name: "debian-sys-maint"
-    password: "{{ galera_deb_db_password }}"
-    priv: "*.*:ALL,GRANT"
+  ansible.builtin.apt:
+    name: "{{ (galera_sst_method == 'mariabackup') | ternary( mariadb_packages | union( mariabackup_packages ), mariadb_packages ) }}"
     state: "present"
   become: true

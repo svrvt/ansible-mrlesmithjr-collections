@@ -1,39 +1,53 @@
 ---
 # We create the required consul configuration folders
 - name: config | creating consul configuration folders
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
-    owner: root
-    group: root
+    owner: "{{ consul_user_info.user }}"
+    group: "{{ consul_user_info.group }}"
     state: directory
+    mode: u=rwx,g=rx,o=rx
   become: true
-  with_items:
+  loop:
     - "{{ consul_config_dir }}"
     - "{{ consul_config_dir + '/client' }}"
     - "{{ consul_config_dir + '/scripts' }}"
 
 # We create the consul data folder
 - name: config | creating consul data folder
-  file:
-    path: "{{ consul_data_dir }}"
-    owner: "{{ consul_user }}"
-    group: "{{ consul_group }}"
+  ansible.builtin.file:
+    path: "{{ consul_configuration.data_dir }}"
+    owner: "{{ consul_user_info.user }}"
+    group: "{{ consul_user_info.group }}"
     recurse: yes
     state: directory
   become: true
 
-- import_tasks: cluster.yml
+- name: Manage Consul cluster
+  ansible.builtin.import_tasks: cluster.yml
 
 - name: config | configuring consul
-  template:
+  ansible.builtin.template:
     src: etc/consul.d/config.json.j2
     dest: "{{ consul_config_dir + '/config.json' }}"
-    owner: root
-    group: root
+    owner: "{{ consul_user_info.user }}"
+    group: "{{ consul_user_info.group }}"
     mode: u=rw,g=r,o=r
   register: consul_reconfigured
   no_log: true
   become: true
   notify:
     - restart consul
-  when: not ansible_check_mode
+
+- name: config | Configuring Consul Backups
+  ansible.builtin.cron:
+    cron_file: consul_backups
+    hour: "{{ consul_backups.schedule.hour }}"
+    job: "{{ consul_bin_path }}/consul snapshot save {{ consul_backups.backup_dir }}/consul_backup.snap"
+    minute: "{{ consul_backups.schedule.minute }}"
+    name: Consul Backups
+    state: present
+    user: root
+    weekday: "{{ consul_backups.schedule.weekday }}"
+  become: true
+  when: consul_backups.enabled|bool

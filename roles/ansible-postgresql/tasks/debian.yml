@@ -2,29 +2,19 @@
 - name: debian | Installing Postgresql Pre-Reqs
   apt:
     name: "{{ postgresql_debian_pre_reqs }}"
-    state: "present"
-  become: true
+    state: present
   register: result
   until: result is successful
-
-- name: debian | Installing Postgresql Python Modules
-  pip:
-    name:
-      - psycopg2
-    state: "present"
-  become: true
 
 - name: debian | Adding Postgresql Repo Key
   apt_key:
     url: "{{ postgresql_debian_repo_info['key'] }}"
-    state: "present"
-  become: true
+    state: present
 
 - name: debian | Adding Postgresql Repo
   apt_repository:
     repo: "{{ postgresql_debian_repo_info['repo'] }}"
-    state: "present"
-  become: true
+    state: present
 
 - name: debian | Installing Postgresql
   apt:
@@ -32,7 +22,12 @@
       - "postgresql-{{ postgresql_version }}-debversion"
       - "postgresql-client-{{ postgresql_version }}"
       - "postgresql-contrib-{{ postgresql_version }}"
-      - "postgresql-plpython-{{ postgresql_version }}"
+      # - "postgresql-plpython-{{ postgresql_version }}"
       - "postgresql-{{ postgresql_version }}"
-    state: "present"
-  become: true
+    state: present
+
+- name: debian | Ensuring Postgresql Service Is Enabled and Started
+  service:
+    name: "{{ postgresql_service }}"
+    state: started
+    enabled: true

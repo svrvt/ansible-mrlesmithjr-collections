@@ -1,1 +1,1 @@
-../requirements.yml
+roles/ansible-mariadb-galera-cluster/requirements.yml

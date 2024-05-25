@@ -1,0 +1,17 @@
+---
+- name: Prepare hosts for testing
+  hosts: all
+  tasks:
+    - name: Update Apt Cache and install cron
+      ansible.builtin.apt:
+        name: cron
+        update_cache: true
+      become: true
+      when: ansible_os_family == "Debian"
+
+    - name: Install cron as requisite
+      ansible.builtin.package:
+        name: cronie
+        state: present
+      become: true
+      when: ansible_os_family == "RedHat"

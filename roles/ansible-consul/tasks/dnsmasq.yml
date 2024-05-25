@@ -1,43 +1,20 @@
 ---
-- name: dnsmasq | installing dnsmasq (Debian)
-  apt:
+- name: dnsmasq | installing dnsmasq
+  ansible.builtin.package:
     name: dnsmasq
     state: present
   become: true
   register: result
   until: result is successful
-  when: ansible_os_family == "Debian"
-
-- name: dnsmasq | installing dnsmasq (Fedora)
-  dnf:
-    name: dnsmasq
-    state: present
-  become: true
-  register: result
-  until: result is successful
-  when: >
-    ansible_os_family == "RedHat" and
-    ansible_distribution == "Fedora"
-
-- name: dnsmasq | installing dnsmasq (RedHat, but not Fedora)
-  yum:
-    name: dnsmasq
-    state: present
-  become: true
-  register: result
-  until: result is successful
-  when: >
-    ansible_os_family == "RedHat" and
-    ansible_distribution != "Fedora"
 
 - name: dnsmasq | ensuring dnsmasq service is enabled
-  service:
+  ansible.builtin.service:
     name: dnsmasq
     enabled: true
   become: true
 
 - name: dnsmasq | configuring dnsmasq to resolv consul dns
-  template:
+  ansible.builtin.template:
     src: etc/dnsmasq.d/10-consul.j2
     dest: /etc/dnsmasq.d/10-consul
     owner: root

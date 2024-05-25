@@ -1,1 +1,1 @@
-../playbook.yml
+roles/ansible-mariadb-galera-cluster/playbook.yml

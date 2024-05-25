@@ -1,1 +1,1 @@
-../playbook.yml
+ansible-consul-cluster/roles/ansible-consul/playbook.yml

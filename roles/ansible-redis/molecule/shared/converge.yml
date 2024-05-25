@@ -1,0 +1,11 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    redis_bind_addresses:
+      - 0.0.0.0
+    redis_config_redis: true
+  tasks:
+    - name: Include mrlesmithjr.redis
+      ansible.builtin.include_role:
+        name: mrlesmithjr.redis

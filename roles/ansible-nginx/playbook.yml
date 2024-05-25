@@ -1,7 +1,7 @@
 ---
-- hosts: all
-  sudo: true
-  vars:
-  roles:
-    - role: ansible-nginx
+- name: Example Playbook
+  hosts: all
   tasks:
+    - name: Include ansible-nginx
+      ansible.builtin.include_role:
+        name: ansible-nginx

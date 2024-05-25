@@ -1,37 +1,37 @@
 ---
 galaxy_info:
   author: Larry Smith Jr.
-  description: An Ansible role to install Apache
-
+  description: Ansible role to install/configure Apache2
   license: MIT
   min_ansible_version: 1.2
 
   platforms:
-  - name: EL
-    versions:
-    - 6
-    - 7
-  - name: Fedora
-    versions:
-    - 23
-    - 24
-    - 25
-    - 26
-    - 27
-    - 28
-    - 29
-  - name: Ubuntu
-    versions:
-    - bionic
-    - precise
-    - trusty
-    - xenial
-  - name: Debian
-    versions:
-    - jessie
-    - stretch
-    - wheezy
+    - name: EL
+      versions:
+        - 6
+        - 7
+        - 8
+    - name: Fedora
+      versions:
+        - 23
+        - 24
+        - 25
+        - 26
+        - 27
+        - 28
+        - 29
+    - name: Ubuntu
+      versions:
+        - bionic
+        - precise
+        - trusty
+        - xenial
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
+        - wheezy
 
   galaxy_tags:
-  - web
+    - web
 dependencies: []

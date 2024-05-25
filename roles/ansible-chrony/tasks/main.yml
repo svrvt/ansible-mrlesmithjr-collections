@@ -1,12 +1,15 @@
 ---
 # tasks file for ansible-chrony
-- include: debian.yml
-  when: ansible_os_family == "Debian"
-  tags:
-    - ansible_chrony
-    - ansible_chrony_debian
+- name: Set facts
+  ansible.builtin.import_tasks: set_facts.yml
 
-- include: config_chrony.yml
-  tags:
-    - ansible_chrony
-    - ansible_chrony_config
+- name: Install Chrony
+  ansible.builtin.package:
+    name: chrony
+    state: present
+    update_cache: yes
+    cache_valid_time: "{{ '3600' if ansible_facts.pkg_mgr == 'apt' else omit }}"
+  become: true
+
+- name: Configure Chrony
+  ansible.builtin.import_tasks: config_chrony.yml

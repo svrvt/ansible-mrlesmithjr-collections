@@ -1,1 +1,1 @@
-../../../group_vars/all/etc-hosts.yml
+group_vars/all/etc-hosts.yml

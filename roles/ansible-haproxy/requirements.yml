@@ -1,2 +1,5 @@
 ---
-- src: https://github.com/mrlesmithjr/ansible-haproxy.git
+collections:
+  - name: community.docker
+    version: "*" # Need to ensure that the latest version is installed or Molecule fails
+roles: []

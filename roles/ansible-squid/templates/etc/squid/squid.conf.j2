@@ -1,10 +1,33 @@
-# {{ ansible_managed }}
+{{ ansible_managed|comment }}
+
+{% if squid_dns_nameservers is defined %}
+dns_nameservers {{ squid_dns_nameservers }}
+{% endif %}
+
+{% if squid_debug_options is defined %}
+# Log verbosity
+debug_options {{ squid_debug_options }}
+{% endif %}
+
+{% if squid_log_format is defined and squid_log_format != [] %}
+# Log format
+{%   for item in squid_log_format %}
+logformat {{ item['name'] }} {{ item['format']}}
+{%   endfor %}
+{% endif %}
+
+{% if squid_access_log is defined and squid_access_log != [] %}
+# Access log location and format
+{%   for item in squid_access_log %}
+access_log {{ item['filename'] }} {{ item['format'] |default('squid')}}
+{%   endfor %}
+{% endif %}
 
 {% if squid_auth_param is defined %}
 # AUTH_PARAM
-{% for item in squid_auth_param %}
+{%   for item in squid_auth_param %}
 auth_param {{ item['name'] }} {{ item['type'] }} {{ item['arg']}}
-{% endfor %}
+{%   endfor %}
 {% endif %}
 
 {% if squid_acl is defined and squid_acl != [] %}
@@ -25,6 +48,12 @@ acl localnet src {{ item }}
 {%   for item in squid_acl_safeports %}
 acl Safe_ports port {{ item['port'] }}{% if item['comment'] is defined %} #{{ item['comment'] }} {% endif %}
 
+{%   endfor %}
+{% endif %}
+
+{% if squid_ssl_bump is defined and squid_ssl_bump != [] %}
+{%   for item in squid_ssl_bump %}
+ssl_bump {{ item['action'] }} {{ item['acl']|join(' ') }}
 {%   endfor %}
 {% endif %}
 
@@ -49,6 +78,11 @@ http_port {{ squid_http_port }}
 {% elif squid_transparent_proxy is defined and squid_transparent_proxy %}
 http_port {{ squid_http_port }} transparent
 {% endif %}
+
+{% if squid_https_enabled is defined and squid_https_enabled %}
+https_port {{ squid_https_port }} cert={{ squid_cert_filename }} key={{ squid_key_filename }}
+{% endif %}
+
 {% if squid_cache_peering %}
 {%   for item in squid_cache_peer %}
 {%     if item.host != ansible_hostname and item.domain is defined %}
@@ -61,4 +95,8 @@ cache_peer {{ item.host }} {{ item.type }} {{ item.proxy_port}} {{ item.icp_port
 
 {% if squid_shutdown_lifetime is defined %}
 shutdown_lifetime {{squid_shutdown_lifetime}}{% else %}
+{% endif %}
+
+{% if (squid_suppress_version is defined and squid_suppress_version) or squid_suppress_version is not defined %}
+httpd_suppress_version_string on
 {% endif %}

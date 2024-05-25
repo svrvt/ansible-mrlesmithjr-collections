@@ -1,64 +1,42 @@
-Role Name
-=========
+# ansible-nodejs
 
-An [Ansible] role to install [NodeJS]
+Ansible role to install NodeJS
 
-Requirements
-------------
+## Build Status
 
-None
+### GitHub Actions
 
-Role Variables
---------------
+![Molecule Test](https://github.com/mrlesmithjr/ansible-nodejs/workflows/Molecule%20Test/badge.svg)
 
-```
----
-# defaults file for ansible-nodejs
-nodejs_debian_packages:
-  - 'build-essential'
-  - 'nodejs'
-nodejs_debian_repo_info:
-  id: '68576280'
-  repo_key: 'https://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x1655A0AB68576280'
-  repos:
-    - 'deb https://deb.nodesource.com/node_{{ nodejs_version }} {{ ansible_distribution_release|lower }} main'
-    - 'deb-src https://deb.nodesource.com/node_{{ nodejs_version }} {{ ansible_distribution_release|lower }} main'
+### Travis CI
 
-# Defines nodejs version to install..( 6.x|7.x )
-# Ubuntu Precise needs to be 6.x
-nodejs_version: '7.x'
-```
+[![Build Status](https://travis-ci.org/mrlesmithjr/ansible-nodejs.svg?branch=master)](https://travis-ci.org/mrlesmithjr/ansible-nodejs)
 
-Dependencies
-------------
+## Requirements
 
-None
+For any required Ansible roles, review:
+[requirements.yml](requirements.yml)
 
-Example Playbook
-----------------
+## Role Variables
 
-```
----
-- hosts: all
-  become: true
-  vars:
-  roles:
-    - role: ansible-nodejs
-  tasks:
-```
+[defaults/main.yml](defaults/main.yml)
 
-License
--------
+## Dependencies
 
-BSD
+## Example Playbook
 
-Author Information
-------------------
+[playbook.yml](playbook.yml)
+
+## License
+
+MIT
+
+## Author Information
 
 Larry Smith Jr.
-- @mrlesmithjr
-- http://everythingshouldbevirtual.com
-- mrlesmithjr [at] gmail.com
 
-[Ansible]: <https://www.ansible.com>
-[NodeJS]: <https://nodejs.org/en/>
+- [@mrlesmithjr](https://twitter.com/mrlesmithjr)
+- [mrlesmithjr@gmail.com](mailto:mrlesmithjr@gmail.com)
+- [http://everythingshouldbevirtual.com](http://everythingshouldbevirtual.com)
+
+> NOTE: Repo has been created/updated using [https://github.com/mrlesmithjr/cookiecutter-ansible-role](https://github.com/mrlesmithjr/cookiecutter-ansible-role) as a template.

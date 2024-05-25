@@ -1,0 +1,7 @@
+---
+- name: Converge
+  hosts: all
+  tasks:
+    - name: "Include ansible-control-machine"
+      include_role:
+        name: "ansible-control-machine"

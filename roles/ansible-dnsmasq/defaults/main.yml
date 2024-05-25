@@ -76,6 +76,9 @@ dnsmasq_dhcp_scopes:
   #   lease_time:                    24h
   #   interface:                     eth1
 
+# Disables updating resolv.conf to use 127.0.0.1 as the only nameserver
+dnsmasq_disable_lo: false
+
 # Define your dns search
 dnsmasq_dns_search: "{{ dnsmasq_pri_domain_name }}"
 
@@ -100,6 +103,10 @@ dnsmasq_forward_nonrouted_addresses: false
 # Default=53
 # Set to 0 to disable DNS
 dnsmasq_listen_port: 53
+
+# value for nameserver in /etc/resolv.conf some tools do not like the :port argument
+# may ovveride such as 127.0.0.1
+dnsmasq_resolvconf_nameserver: "127.0.0.1:{{ dnsmasq_listen_port }}"
 
 # Define your dns servers
 dnsmasq_nameservers:
@@ -126,13 +133,16 @@ dnsmasq_pri_netmask_cidr: 24
 dnsmasq_pri_network: "{{ ansible_default_ipv4['network'] }}"
 
 # Defines if you want dnsmasq to read /etc/hosts
-dnsmasq_read_etc_hosts:
-  true
-  # Define if /etc/resolv.conf should be polled for changes
+dnsmasq_read_etc_hosts: true
+
+# Define if /etc/resolv.conf should be polled for changes
 dnsmasq_poll_etc_resolv_conf: true
 
 # Define if /etc/resolv.conf should be read
 dnsmasq_read_etc_resolv_conf: true
+
+# Define if dns negative cache should be disable
+dnsmasq_disabled_negcache: false
 
 # Define static addresses
 dnsmasq_static_addresses:

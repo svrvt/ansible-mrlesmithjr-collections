@@ -1,19 +1,24 @@
 ---
 - name: debian | Installing Pre-Reqs
   apt:
-    name: ["apt-transport-https"]
+    name:
+      - apt-transport-https
+      - gnupg
     state: present
   become: true
   register: result
   until: result is successful
 
-- name: debian | installing logstash repo key
+- name: debian | Copying Elasticsearch GPG Key
+  copy:
+    src: GPG-KEY-elasticsearch
+    dest: /tmp/GPG-KEY-elasticsearch
+
+- name: debian | Adding Elasticsearch GPG Key
   apt_key:
-    url: "{{ logstash_repo_key }}"
+    file: /tmp/GPG-KEY-elasticsearch
     state: present
   become: true
-  register: result
-  until: result is successful
 
 - name: debian | adding logstash repo
   apt_repository:
@@ -22,7 +27,7 @@
   become: true
   register: _logstash_repo_added
 
-- name: debian | Updating apt-cache
+- name: debian | Updating apt-cache # noqa 503
   apt:
     update_cache: true
   become: true
@@ -32,7 +37,7 @@
 
 - name: debian | installing java
   apt:
-    name: "{{ 'openjdk-' + logstash_openjdk_version + '-jre-headless' }}"
+    name: "{{ 'openjdk-' ~ logstash_openjdk_version ~ '-jre-headless' }}"
     state: present
   become: true
   register: result
@@ -50,7 +55,7 @@
 
 - name: debian | Installing Logstash
   apt:
-    name: "{{ 'logstash=' + logstash_minor_ver }}"
+    name: "{{ 'logstash=' ~ logstash_minor_ver }}"
     state: present
     # This is required to allow downgrade if user desires to move back
     # to previous version

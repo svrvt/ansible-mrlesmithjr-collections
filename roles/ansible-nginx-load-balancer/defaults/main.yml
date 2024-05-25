@@ -37,6 +37,22 @@
 ### backend_listen_port
 #### Define the backend listen port which application is listening on
 nginx_load_balancer_configs: []
+# - name: "{{ inventory_hostname_short+'-letsencrypt' }}"
+#   frontend_listen_port: 80
+#   locations:
+#     - location: /.well-known/acme-challenge
+#       options:
+#         - root /var/www/letsencrypt
+#         - try_files $uri $uri/ =404
+#     - location: /
+#       options:
+#         - "rewrite ^ https://{{ ssl_domain_name }}$request_uri? permanent"
+#   method: round_robin
+#   protocol: http
+#   server_name:
+#     - "{{ ssl_domain_name }}"
+#   ssl: false
+#   upstream: []
 # - name: google_dns
 #   frontend_listen_port: 53
 #   method: round_robin
@@ -48,7 +64,16 @@ nginx_load_balancer_configs: []
 #       backend_listen_port: 53
 # - name: web_app
 #   frontend_listen_port: 80
-#   location: /
+#   locations:
+#     - location: /
+#       options:
+#         - proxy_buffering off
+#         - proxy_http_version 1.1
+#         - "proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for"
+#         - "proxy_set_header Upgrade $http_upgrade"
+#         - "proxy_set_header Connection $http_connection"
+#         - access_log off
+#         - proxy_pass http://127.0.0.1:8080
 #   method: round_robin
 #   protocol: http
 #   server_name:
@@ -84,13 +109,6 @@ nginx_load_balancer_events:
   # The Ubuntu default is 768
   - "worker_connections 1024"
 
-nginx_load_balancer_headers:
-  []
-  # - "Host $host"
-  # - "X-Real-IP $remote_addr"
-  # - "X-Forwarded-For $remote_addr"
-  # - "X-Forwarded-Host $remote_addr"
-
 # Includes another file, or files matching the specified mask, into
 # configuration. Included files should consist of syntactically correct
 # directives and blocks
@@ -113,7 +131,7 @@ nginx_load_balancer_ha_primary: node0
 
 # Defines SSL cert(s) info
 nginx_load_balancer_ssl:
-  []
+  {}
   # csr_key_file: "/etc/ssl/{{ inventory_hostname }}-csr.pem"
   # enabled: false
   # generate_keys: false

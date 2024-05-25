@@ -103,6 +103,9 @@ zfs_enable_performance_tuning: false
 # Defines if Samba is installed and configured
 zfs_enable_samba: false
 
+# Defines if keys for encrypted filesystems are loaded on boot
+zfs_autoload_encryption_keys: false
+
 # Defines filesystems to manage
 zfs_filesystems: []
   # - name: nfs
@@ -143,9 +146,23 @@ zfs_filesystems: []
   #     read_only: "no"
   #     share_name: Movies
   #     writable: "yes"
+  #   xattr: sa
+  #   acltype: posixacl
   #   state: present
   #   #standard (default) | always | disabled
   #   sync: disabled
+  # - name: encrypted-fs
+  #   pool: tank
+  #   state: present
+  #   # The encryption algorithm to use, or just "on" to use the default one picked by ZFS.
+  #   encryption: aes-256-gcm
+  #   # Where to lookup the key on the filesystem.  Prompt is not supported by this role.
+  #   keylocation: "file:///use/local/etc/zfs/keys/tank/encyrpted-fs"
+  #   # passphrase | hex | raw
+  #   keyformat: "hex"
+
+# Defines if this role should manage the installation of ZFS, including updates.
+zfs_install_update: true
 
 # Defines if iscsitarget service is enabled
 zfs_iscsistarget_enable: "{{ zfs_enable_iscsi }}"
@@ -215,6 +232,8 @@ zfs_pools: []
   #     - ata-INTEL_SSDSC2BW240A4_CVDA4010045B2403GN
   #     - ata-INTEL_SSDSC2BW240A4_BTDA329501102403GN
   #   type: mirror
+  #   xattr: sa
+  #   acltype: posixacl
   #   state: present
 
 # defines global scrub cron job parameters. Only applies when `zfs_enable_monitoring` is set to True.
@@ -247,6 +266,16 @@ zfs_volumes: []
   #     # - 10.0.0.0/8
   #     - 192.168.202.0/24
   #   state: present
+  # - name: encrypted-vol
+  #   pool: tank
+  #   state: present
+  #   # The encryption algorithm to use, or just "on" to use the default one picked by ZFS.
+  #   encryption: on
+  #   # Where to lookup the key on the filesystem.  Prompt is not supported by this role.
+  #   keylocation: "file:///use/local/etc/zfs/keys/tank/encyrpted-vol"
+  #   # passphrase | hex | raw
+  #   keyformat: "hex"
+  #   volsize: 3G
 
 zfs_enable_monitoring: False
 

@@ -1,7 +1,4 @@
 ---
-- src: https://github.com/mrlesmithjr/ansible-collectd.git
-- src: https://github.com/mrlesmithjr/ansible-grafana.git
-- src: https://github.com/mrlesmithjr/ansible-graphite.git
-- src: https://github.com/mrlesmithjr/ansible-influxdb.git
-- src: https://github.com/mrlesmithjr/ansible-snmpd.git
-- src: https://github.com/mrlesmithjr/ansible-timezone.git
+roles:
+  - name: mrlesmithjr.prometheus
+  - name: mrlesmithjr.prometheus-node-exporter

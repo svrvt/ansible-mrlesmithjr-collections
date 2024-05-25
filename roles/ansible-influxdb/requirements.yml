@@ -1,0 +1,6 @@
+---
+collections:
+  - name: community.docker
+    version: "*" # Need to ensure that the latest version is installed or Molecule fails
+roles:
+  - src: https://github.com/mrlesmithjr/ansible-bootstrap-python.git

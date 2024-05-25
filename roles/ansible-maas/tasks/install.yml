@@ -1,91 +1,79 @@
 ---
 - name: install | Installing Pre-Reqs
-  apt:
-    name: "{{ item }}"
-    state: "present"
-  with_items:
-    - 'build-essential'
-    - 'libffi-dev'
-    - 'libssl-dev'
-    - 'python-dev'
-    - 'python-pip'
-    - 'python-setuptools'
-    - 'python3-setuptools'
-    - 'python3-pip'
+  ansible.builtin.apt:
+    name: "{{ maas_debian_pre_reqs }}"
+    state: present
+  become: true
 
-- name: install | Adding MAAS Repo Info
-  apt_repository:
-    repo: '{{ maas_repo }}'
-    state: "present"
+- name: install | Adding MAAS Repo
+  ansible.builtin.apt_repository:
+    repo: "{{ maas_repo }}"
+    state: present
+  become: true
 
 - name: install | Installing MAAS (Single-Node)
-  apt:
-    name: "maas"
-    state: "present"
-  when: maas_single_node_install
+  ansible.builtin.apt:
+    name: maas
+    state: present
+  when: maas_single_node_install|bool
+  become: true
 
 - name: install | Installing maas-region-controller
-  apt:
-    name: "maas-region-controller"
-    state: "present"
+  ansible.builtin.apt:
+    name: maas-region-controller
+    state: present
   when: >
-        not maas_single_node_install and
-        inventory_hostname in groups['maas_region_controller']
+    not maas_single_node_install|bool and
+    inventory_hostname in groups['maas_region_controller']
+  become: true
 
 - name: install | Installing maas-rack-controller
-  apt:
-    name: "maas-rack-controller"
-    state: "present"
+  ansible.builtin.apt:
+    name: maas-rack-controller
+    state: present
   when: >
-        not maas_single_node_install and
-        inventory_hostname in groups['maas_rack_controller']
+    not maas_single_node_install|bool and
+    inventory_hostname in groups['maas_rack_controller']
 
 - name: install | Checking If MAAS Admin Account Has Been Created
-  stat:
-    path: "/etc/maas/.admin_account_created"
-  register: "maas_admin_account_check"
+  ansible.builtin.stat:
+    path: /etc/maas/.admin_account_created
+  register: maas_admin_account_check
 
-- name: install | Creating MAAS Admin Account(s)
-  command: "maas createadmin --username {{ item.username }} --email {{ item.email }} --password {{ item.password }}"
-  register: "maas_admin_account_created"
-  with_items: '{{ maas_adminusers }}'
+- name: install | Creating MAAS Admin Account(s) # noqa no-changed-when
+  ansible.builtin.command: "maas createadmin --username {{ item.username }} --email {{ item.email }} --password {{ item.password }}"
+  register: maas_admin_account_created
+  loop: "{{ maas_adminusers }}"
   when: >
-        (maas_single_node_install and
-        not maas_admin_account_check.stat.exists) or
-        (not maas_single_node_install and
-          not maas_admin_account_check.stat.exists and
-          inventory_hostname in groups['maas_region_controller'])
+    (maas_single_node_install|bool and
+    not maas_admin_account_check.stat.exists) or
+    (not maas_single_node_install|bool and
+      not maas_admin_account_check.stat.exists and
+      inventory_hostname in groups['maas_region_controller'])
+  become: true
+  no_log: true
 
-- name: install | Marking MAAS Admin Account As Being Created
-  file:
-    path: "/etc/maas/.admin_account_created"
-    state: "touch"
+- name: install | Marking MAAS Admin Account As Being Created # noqa no-handler
+  ansible.builtin.file:
+    path: /etc/maas/.admin_account_created
+    state: touch
+    mode: u=rw,g=r,o=r
   when: maas_admin_account_created.changed
+  become: true
 
 # Install libvirt-bin to control KVM instances
 - name: install | Installing Libvirt (KVM)
-  apt:
-    name: "libvirt-bin"
-    state: "present"
+  ansible.builtin.apt:
+    name:
+      - qemu-kvm
+      - libvirt-daemon-system
+    state: present
+  when: maas_kvm_management|bool
+  become: true
 
-- name: install | Installing MAAS Python Module(s)
-  pip:
-    name: "{{ item }}"
-    state: "present"
-  with_items:
-    - 'argparse'
-    - 'argparse_config'
-    - 'httplib2'
-    - 'jinja2'
-    - 'maasutil'
-    - 'oauth'
-    - 'pyyaml'
-  when: not ansible_check_mode
-
-# - name: install | Installing MAAS Python Module(s)
-#   pip:
-#     name: "{{ item }}"
-#     state: "present"
-#     executable: pip3
-#   with_items:
-#     - 'python-libmaas'
+- name: install | Installing MAAS Python Requirements
+  ansible.builtin.pip:
+    executable: pip3
+    name: "{{ maas_python_reqs }}"
+    state: present
+  become: true

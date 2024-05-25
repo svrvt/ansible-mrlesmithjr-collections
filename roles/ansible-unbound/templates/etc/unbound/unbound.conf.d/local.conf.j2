@@ -62,6 +62,11 @@ server:
 {%     endif %}
 {%   endfor %}
 {% endif %}
+{% if unbound_insecure_domains is defined %}
+{%   for item in unbound_insecure_domains %}
+  domain-insecure: "{{ item }}"
+{%   endfor %}
+{% endif %}
 {% if unbound_forward_zones is defined %}
 {%   for item in unbound_forward_zones %}
   forward-zone:

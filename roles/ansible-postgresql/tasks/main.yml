@@ -1,14 +1,25 @@
 ---
 # tasks file for ansible-postgresql
-- include: debian.yml
+- import_tasks: preflight.yml
+
+- include_tasks: set_facts.yml
+
+- include_tasks: debian.yml
   when: ansible_os_family == "Debian"
 
-- include: dbs.yml
+- include_tasks: redhat.yml
+  when: ansible_os_family == "RedHat"
 
-- include: users.yml
+- include_tasks: python.yml
 
-- include: config.yml
+- include_tasks: dbs.yml
+
+- include_tasks: users.yml
+
+- include_tasks: config.yml
   when: postgresql_config
 
-- include: replication.yml
-  when: postgresql_enable_replication
+- include_tasks: replication.yml
+  when:
+    - postgresql_config
+    - postgresql_enable_replication

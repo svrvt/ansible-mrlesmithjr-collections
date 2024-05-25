@@ -1,12 +1,12 @@
 ---
-- name: systemd_resolved | Checking If systemd-resolved Service Is Present
-  command: systemctl status systemd-resolved.service
+- name: systemd_resolved | Checking If systemd-resolved Service Is Present # noqa command-instead-of-module
+  ansible.builtin.command: systemctl status systemd-resolved.service
   register: _dnsmasq_systemd_resolved_check
   changed_when: false
   failed_when: false
 
 - name: systemd_resolved | Disabling and Stopping systemd-resolved
-  service:
+  ansible.builtin.service:
     name: systemd-resolved
     state: stopped
     enabled: false
@@ -17,22 +17,22 @@
   when: _dnsmasq_systemd_resolved_check['rc'] == 0
 
 - name: systemd_resolved | Checking If /etc/resolv.conf Exists
-  stat:
+  ansible.builtin.stat:
     path: /etc/resolv.conf
   register: _dnsmasq_resolv_conf
 
-- name: systemd_resolved | Removing Existing /etc/resolv.conf If symlink
-  file:
+- name: systemd_resolved | Removing Existing /etc/resolv.conf If symlink # noqa no-handler
+  ansible.builtin.file:
     path: /etc/resolv.conf
     state: absent
   become: true
   register: _dnsmasq_resolv_conf_removed
-  when: >
-    _dnsmasq_systemd_resolved_disabled['changed'] and
-    _dnsmasq_resolv_conf['stat']['islnk']
+  when:
+    - _dnsmasq_systemd_resolved_disabled['changed']
+    - _dnsmasq_resolv_conf['stat']['islnk']
 
 - name: systemd_resolved | Creating /etc/resolv.conf
-  template:
+  ansible.builtin.template:
     src: etc/resolv.conf.j2
     dest: /etc/resolv.conf
     owner: root
@@ -41,4 +41,4 @@
   become: true
   notify:
     - restart dnsmasq
-  when: _dnsmasq_resolv_conf_removed['changed']
+  when: ansible_virtualization_type != "docker"

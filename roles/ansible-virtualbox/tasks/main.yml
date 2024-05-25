@@ -4,7 +4,7 @@
   when: ansible_os_family == "Archlinux"
 
 - include_tasks: debian.yml
-  when: ansible_os_family == "Debian"
+  when: ansible_os_family in ["Debian", "Elementary OS"]
 
 - include_tasks: redhat.yml
   when: ansible_os_family == "RedHat"

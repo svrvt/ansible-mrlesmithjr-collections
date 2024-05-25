@@ -1,17 +1,28 @@
 ---
 - name: debian | Installing Pre-Reqs
-  apt:
-    name: ["python-pip", "ruby", "rubygems-integration"]
+  ansible.builtin.apt:
+    name:
+      - ruby
+      - rubygems-integration
     state: present
   become: true
   register: result
   until: result is successful
 
 - name: debian | Installing Redis
-  apt:
+  ansible.builtin.apt:
     name: redis-server
     state: present
   become: true
   register: result
   until: result is successful
-  when: not redis_install_from_source
+
+- name: debian | Installing Redis Sentinel
+  ansible.builtin.apt:
+    name: redis-sentinel
+    state: present
+  become: true
+  register: result
+  until: result is successful
+  when:
+    - redis_replication|bool

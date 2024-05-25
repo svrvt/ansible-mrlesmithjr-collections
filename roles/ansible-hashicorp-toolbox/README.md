@@ -1,26 +1,30 @@
 # ansible-hashicorp-toolbox
 
-An [Ansible](https://www.ansible.com) role to install various [Hashicorp](https://www.hashicorp.com/) utilities
+Ansible role to install various Hashicorp Utils
 
--   [consul](https://www.consul.io/)
--   [nomad](https://www.nomadproject.io/)
--   [packer](https://www.packer.io/)
--   [terraform](https://www.terraform.io/)
--   [vagrant](https://www.vagrantup.com/)
--   [vault](https://www.vaultproject.io/)
+- [Boundary](https://www.boundaryproject.io/)
+- [Consul](https://www.consul.io/)
+- [Nomad](https://www.nomadproject.io/)
+- [Packer](https://www.packer.io/)
+- [Terraform](https://www.terraform.io/)
+- [Vagrant](https://www.vagrantup.com/)
+- [Vault](https://www.vaultproject.io/)
+- [Waypoint](https://www.waypointproject.io/)
+
+## Build Status
+
+### GitHub Actions
+
+![Molecule Test](https://github.com/mrlesmithjr/ansible-hashicorp-toolbox/workflows/Molecule%20Test/badge.svg)
+
+### Travis CI
+
+[![Build Status](https://travis-ci.org/mrlesmithjr/ansible-hashicorp-toolbox.svg?branch=master)](https://travis-ci.org/mrlesmithjr/ansible-hashicorp-toolbox)
 
 ## Requirements
 
-None
-
-## Vagrant
-
-You can spin up a Vagrant box and test all of these tools out without
-installing anywhere as well.
-
-```bash
-vagrant up
-```
+For any required Ansible roles, review:
+[requirements.yml](requirements.yml)
 
 ## Role Variables
 
@@ -28,9 +32,9 @@ vagrant up
 
 ## Dependencies
 
-None
-
 ## Example Playbook
+
+[playbook.yml](playbook.yml)
 
 ## License
 
@@ -40,6 +44,8 @@ MIT
 
 Larry Smith Jr.
 
--   [EverythingShouldBeVirtual](http://everythingshouldbevirtual.com)
--   [@mrlesmithjr](https://www.twitter.com/mrlesmithjr)
--   <mailto:mrlesmithjr@gmail.com>
+- [@mrlesmithjr](https://twitter.com/mrlesmithjr)
+- [mrlesmithjr@gmail.com](mailto:mrlesmithjr@gmail.com)
+- [http://everythingshouldbevirtual.com](http://everythingshouldbevirtual.com)
+
+> NOTE: Repo has been created/updated using [https://github.com/mrlesmithjr/cookiecutter-ansible-role](https://github.com/mrlesmithjr/cookiecutter-ansible-role) as a template.

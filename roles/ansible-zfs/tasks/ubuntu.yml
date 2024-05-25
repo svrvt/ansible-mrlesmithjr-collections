@@ -15,7 +15,7 @@
 
 - name: ubuntu | ensuring Ubuntu universe repo is enabled ({{ ansible_distribution_version }} >= 16.04)
   apt_repository:
-    repo: "deb http://us.archive.ubuntu.com/ubuntu {{ ansible_distribution_release|lower }} universe"
+    repo: "deb {{ ubuntu_apt_repository }} {{ ansible_distribution_release|lower }} universe"
     state: present
   when: >
         ansible_distribution_version >= '16.04'
@@ -34,22 +34,20 @@
 
 - name: ubuntu | installing iscsitarget (if enabled)
   apt:
-    name: "{{ item }}"
+    name:
+      - iscsitarget
+      - iscsitarget-dkms
     state: present
-  with_items:
-    - iscsitarget
-    - iscsitarget-dkms
   when: >
         zfs_enable_iscsi is defined and
         zfs_enable_iscsi
 
 - name: ubuntu | un-installing iscsitarget (if not enabled)
   apt:
-    name: "{{ item }}"
+    name:
+      - iscsitarget
+      - iscsitarget-dkms
     state: absent
-  with_items:
-    - iscsitarget
-    - iscsitarget-dkms
   when: >
         zfs_enable_iscsi is defined and
         not zfs_enable_iscsi
@@ -107,11 +105,22 @@
   notify:
     - start zfs-share
 
+- name: ubuntu | Checking for ZFS-Auto-Snapshot package from the distribution
+  command: apt-cache show zfs-auto-snapshot
+  ignore_errors: true
+  register: auto_snapshot
+  when: zfs_enable_auto_snapshots
+  changed_when: false
+  failed_when: false
+  check_mode: false
+
 - name: ubuntu | Adding ZFS-Auto-Snapshot Repo
   apt_repository:
     repo: ppa:bob-ziuchkovski/zfs-auto-snapshot
     state: present
-  when: zfs_enable_auto_snapshots
+  when: >
+    zfs_enable_auto_snapshots and
+    auto_snapshot.stderr == 'E: No packages found'
 
 - name: ubuntu | Installing ZFS-Auto-Snapshot
   apt:

@@ -1,0 +1,17 @@
+---
+- name: create_vg | creating new LVM volume group(s)
+  community.general.lvg:
+    vg: "{{ vg.vgname }}"
+    pvs: "{{ vg.disks | join(',') }}"
+    state: present
+    pvresize: "{{ vg.pvresize | default(pvresize_to_max) }}"
+  become: true
+  when:
+    - vg.create is defined
+    - vg.create|bool
+
+- name: manage_lvm | loop over logical volume group(s) to create logical volumes
+  ansible.builtin.include_tasks: create_lv.yml
+  loop: "{{ vg.lvnames | default([]) }}"
+  loop_control:
+    loop_var: lv

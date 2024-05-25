@@ -107,6 +107,10 @@ unbound_optimizations:
 
 # Default is to use syslog, which will log to /var/log/messages.
 unbound_use_syslog: true
+
+# Configures zones to disable DNSSEC for (useful for local unsigned DNS zones)
+unbound_insecure_domains: []
+# - insecure.local
 ```
 
 ## Dependencies

@@ -1,8 +1,9 @@
 ---
 # defaults file for ansible-postgresql
-postgresql_config: false
 
-postgresql_data_dir: "/var/lib/postgresql/{{ postgresql_version }}/main"
+# Defines whether Postgres should be configured. If setting up replication, this
+# must be set to true.
+postgresql_config: false
 
 # Defines any DBs to manage
 postgresql_dbs: []
@@ -10,9 +11,9 @@ postgresql_dbs: []
 #   state: present
 
 postgresql_debian_pre_reqs:
-  - "libpq-dev"
-  - "python-dev"
-  - "python-pip"
+  - libpq-dev
+  # - python-dev
+  # - python-pip
 
 postgresql_debian_repo_info:
   key: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
@@ -25,11 +26,9 @@ postgresql_enable_bonjour: false
 
 postgresql_enable_replication: false
 
-postgresql_enable_ssl: true
+postgresql_enable_ssl: false
 
 postgresql_external_pid_file: "/var/run/postgresql/{{ postgresql_version }}-main.pid"
-
-postgresql_hba_file: "/etc/postgresql/{{ postgresql_version }}/main/pg_hba.conf"
 
 postgresql_ident_file: "/etc/postgresql/{{ postgresql_version }}/main/pg_ident.conf"
 
@@ -70,6 +69,11 @@ postgresql_max_wal_size: 1GB
 # The default is 80 MB
 postgresql_min_wal_size: 80MB
 
+postgresql_redhat_pre_reqs:
+  - libpqxx-devel
+  # - python-devel
+  # - python-pip
+
 postgresql_replication:
   interface: "enp0s8"
   # master: "{{ groups[postgresql_replication_group][0] }}"
@@ -97,11 +101,30 @@ postgresql_users:
   # - name: 'test'
   #   # db: 'test'
   #   password: 'test'
-  #   # priv: ''
-  #   state: 'present'
+  #   # role_attr_flags: ''
+  #   state: present
+
+# Configure HBA (to allow remote connections)
+# Dict of the following keys:
+#   type: host/local
+#   database: use 'all' for... all
+#   user: use 'all' for... all
+#   address: CIDR IP(v4/v6)
+#   method: md5/trust/peer/...
+postgresql_config_hba:
+  - type: host
+    database: all
+    user: all
+    address: 127.0.0.1/32
+    method: md5
+  - type: host
+    database: all
+    user: all
+    address: ::1/128
+    method: md5
 
 # Define version to be installed
-postgresql_version: 9.6
+postgresql_version: 12
 
 # The amount of shared memory used for WAL data that has not yet been written
 # to disk. The default setting of -1 selects a size equal to 1/32nd (about 3%)

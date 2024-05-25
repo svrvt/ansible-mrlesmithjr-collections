@@ -1,2 +1,8 @@
 ---
-- src: https://github.com/mrlesmithjr/ansible-etc-hosts
+collections:
+  - name: ansible.utils
+    version: ">=2.12.0"
+  - name: ansible.netcommon
+  - name: community.docker
+    version: "*" # Need to ensure that the latest version is installed or Molecule fails
+roles: []
