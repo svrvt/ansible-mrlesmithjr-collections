@@ -1,0 +1,16 @@
+---
+- name: debian | Adding Ubuntu Backports
+  apt_repository:
+    repo: "deb http://archive.ubuntu.com/ubuntu {{ ansible_distribution_release|lower }}-backports main restricted universe multiverse"
+    state: present
+  become: true
+  when: >
+        ansible_distribution == "Ubuntu" and
+        ansible_distribution_version|version_compare('16.04', operator='<=', strict=True)
+
+- name: debian | Installing Cockpit Packages
+  apt:
+    name: "{{ item }}"
+    state: present
+  become: true
+  with_items: "{{ cockpit_debian_packages }}"

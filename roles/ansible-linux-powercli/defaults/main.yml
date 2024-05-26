@@ -1,0 +1,4 @@
+---
+linux_powercli_powershell_debian_repo_info:
+  key: https://packages.microsoft.com/keys/microsoft.asc
+  repo: 'deb [arch=amd64] https://packages.microsoft.com/{{ ansible_distribution|lower }}/{{ ansible_distribution_version }}/prod {{ ansible_distribution_release|lower }} main'

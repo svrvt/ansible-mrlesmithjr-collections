@@ -1,0 +1,16 @@
+---
+# defaults file for ansible-letsencrypt
+letsencrypt_admin_email: admin@example.org
+
+letsencrypt_directory: /etc/letsencrypt
+
+letsencrypt_dhparam_file: "{{ letsencrypt_directory+'/certs/dhparam.pem' }}"
+
+letsencrypt_dhparam_numbits: 2048
+
+letsencrypt_domains:
+  []
+  # - example.org
+
+# Defines whether to just test SSL cert request or make permanent
+letsencrypt_dry_run: true

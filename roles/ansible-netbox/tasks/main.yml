@@ -1,0 +1,6 @@
+---
+# tasks file for ansible-netbox
+- include_tasks: debian.yml
+  when: ansible_os_family == 'Debian'
+
+- include_tasks: install.yml

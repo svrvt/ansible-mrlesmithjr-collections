@@ -1,0 +1,17 @@
+galaxy_info:
+  author: Larry Smith Jr.
+  description: MySQL DB Back-end for Ansible inventory
+  role_name: mysql_dynamic_inventory
+  namespace: mrlesmithjr
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+
+  galaxy_tags: []
+
+dependencies: []

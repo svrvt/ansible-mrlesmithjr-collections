@@ -1,0 +1,8 @@
+---
+# tasks file for ansible-bird
+- include: debian.yml
+  when: ansible_os_family == "Debian"
+
+- include: system_settings.yml
+
+- include: config.yml

@@ -1,0 +1,109 @@
+---
+- name: config | Configuring Kerberos
+  template:
+    src: etc/krb5.conf.j2
+    dest: /etc/krb5.conf
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  become: true
+
+- name: config | Configuring realmd
+  template:
+    src: etc/realmd.conf.j2
+    dest: /etc/realmd.conf
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  become: true
+
+# - name: config | Capturing Configuration State
+#   shell: "realm discover {{ sssd_kerberos_realm|upper }} | grep configured | awk -F: '{ print $2 }'"
+#   become: true
+#   register: _realm_configuration_state
+#   changed_when: false
+
+# - name: config | Set Configuration State
+#   set_fact:
+#     _realm_configured: "{{ _realm_configuration_state['stdout'].strip() }}"
+
+# - name: config | Initializing Kerberos
+#   expect:
+#     command: "kinit {{ sssd_domain_admin_user }}@{{ sssd_kerberos_realm|upper }}"
+#     responses:
+#       Password for *: "{{ sssd_domain_admin_password }}"
+#   become: true
+#   when: _realm_configured == 'no'
+- name: config | Checking Domain Join Status
+  stat:
+    path: /etc/sssd/.ad_joined
+  register: _domain_joined
+  become: true
+
+# - name: config | Joining Domain
+#   expect:
+#     command: /bin/bash -c "realm join {{ sssd_kerberos_realm|lower }} --install='/'"
+#     responses:
+#       Password for *: "{{ sssd_domain_admin_password }}"
+#   become: true
+#   when: not _domain_joined['stat']['exists']
+
+- name: config | Joining Domain # noqa 306
+  shell: echo {{ sssd_domain_admin_password }} | sudo realm join -U "{{ sssd_domain_admin_user }}" {{ sssd_kerberos_realm|lower }} --install='/'
+  become: true
+  when: not _domain_joined['stat']['exists']
+
+- name: config | Marking Domain Joined
+  file:
+    path: /etc/sssd/.ad_joined
+    state: touch
+  become: true
+  when: not _domain_joined['stat']['exists']
+
+# - name: config | Configuring Samba
+#   template:
+#     src: etc/samba/smb.conf.j2
+#     dest: /etc/samba/smb.conf
+#     owner: root
+#     group: root
+#     mode: u=rw,g=r,o=r
+#   become: true
+#   notify:
+#     - restart smbd
+#     - restart nmbd
+
+- name: config | Configuring SSSD
+  template:
+    src: etc/sssd/sssd.conf.j2
+    dest: /etc/sssd/sssd.conf
+    owner: root
+    group: root
+    mode: u=rw,g=,o=
+  become: true
+  notify:
+    - restart sssd
+
+- name: config | Configuring /etc/pam.d/common-session
+  template:
+    src: etc/pam.d/common-session.j2
+    dest: /etc/pam.d/common-session
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  become: true
+# - name: update systemd service unit
+#   ini_file:
+#     path: /lib/systemd/system/sssd.service
+#     section: "{{ item.section }}"
+#     option: "{{ item.option }}"
+#     value: "{{ item.value }}"
+#     no_extra_spaces: yes
+#   become: true
+#   with_items:
+#     - section: Service
+#       option: ExecStartPre
+#       value: "/bin/rm -rf /var/run/sssd.pid || true"
+#     - section: Service
+#       option: Restart
+#       value: always
+#   notify: reload systemd config

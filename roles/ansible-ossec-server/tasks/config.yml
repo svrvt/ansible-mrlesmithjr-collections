@@ -1,0 +1,10 @@
+---
+- name: config | Configuring OSSEC
+  template:
+    src: "var/ossec/etc/ossec.conf.j2"
+    dest: "/var/ossec/etc/ossec.conf"
+    owner: "root"
+    group: "ossec"
+    mode: "u=rw,g=rw,o="
+  become: true
+  notify: "restart ossec"

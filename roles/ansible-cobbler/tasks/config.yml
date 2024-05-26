@@ -1,0 +1,28 @@
+---
+- name: config | Configuring Cobbler
+  template:
+    src: "{{ item }}.j2"
+    dest: "/{{ item }}"
+    owner: "root"
+    group: "root"
+    mode: "u=rw,g=r,o=r"
+  become: true
+  notify: "restart cobbler"
+  with_items:
+    - 'etc/cobbler/modules.conf'
+    - 'etc/cobbler/settings'
+
+- name: config | Getting Cobbler Loaders
+  command: "cobbler get-loaders"
+  become: true
+  args:
+    creates: "/var/lib/cobbler/loaders/pxelinux.0"
+
+- name: config | Configuring debmirror
+  template:
+    src: "etc/debmirror.conf.j2"
+    dest: "/etc/debmirror.conf"
+    owner: "root"
+    group: "root"
+    mode: "u=rw,g=r,o=r"
+  become: true

@@ -1,0 +1,21 @@
+---
+- name:     config | Ensuring {{ lxd_preseed_file|dirname }} Exists
+  file:
+    path:   "{{ lxd_preseed_file|dirname }}"
+    state:  directory
+  become:   true
+
+- name:     config | Creating Configuration File
+  template:
+    dest:   "{{ lxd_preseed_file }}"
+    group:  root
+    mode:   u=rw,g=r,o=
+    owner:  root
+    src:    preseed.yml.j2
+  become:   true
+  register: _lxd_config
+
+- name:     config | Configuring LXD
+  shell:    cat {{ lxd_preseed_file }} | lxd init --preseed
+  become:   true
+  when:     _lxd_config['changed']

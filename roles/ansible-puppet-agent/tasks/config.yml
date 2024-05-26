@@ -1,0 +1,11 @@
+---
+- name: config | Configuring Puppet
+  template:
+    src: etc/puppetlabs/puppet/puppet.conf.j2
+    dest: /etc/puppetlabs/puppet/puppet.conf
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  become: true
+  notify:
+    - restart puppet

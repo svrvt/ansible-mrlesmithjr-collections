@@ -1,0 +1,76 @@
+---
+- block:
+  - name: redhat | Enabling EPEL
+    yum:
+      name: "epel-release"
+      state: "present"
+    become: true
+
+  - name: redhat | Install Pre-Reqs
+    yum:
+      name: "{{ item }}"
+      state: "present"
+    become: true
+    with_items: '{{ cobbler_redhat_pre_reqs }}'
+
+  - name: redhat | Disabling SELINUX
+    selinux:
+      state: "disabled"
+    become: true
+    notify: "restart cobbler"
+
+  - name: redhat | Installing Cobbler
+    yum:
+      name: "{{ item }}"
+      state: "present"
+    become: true
+    with_items:
+      - 'cobbler'
+      - 'cobbler-web'
+
+  when: ansible_distribution != "Fedora"
+
+# - name: redhat | Stopping And Disabling Services
+#   service:
+#     name: "{{ item }}"
+#     state: "stopped"
+#     enabled: false
+#   become: true
+#   with_items:
+#     - 'iptables'
+#     - 'ip6tables'
+
+# This task is currently not idempotent
+- name: redhat | Ensuring Firewalld Service Is Started And Enabled On Boot
+  service:
+    name: "firewalld"
+    state: "started"
+    enabled: true
+  become: true
+
+- name: redhat | Ensuring Xinetd Service Is Enabled On Boot
+  service:
+    name: "xinetd"
+    enabled: true
+  become: true
+
+- name: redhat | Ensuring Cobbler Service Is Started And Enabled On Boot
+  service:
+    name: "cobblerd"
+    state: "started"
+    enabled: true
+  become: true
+
+- name: redhat | Ensuring Apache2 Is Started And Enabled On Boot
+  service:
+    name: "httpd"
+    state: "started"
+    enabled: true
+  become: true
+
+- name: redhat | Ensuring rsyncd Is Started And Enabled On Boot
+  service:
+    name: "rsyncd"
+    state: "started"
+    enabled: true
+  become: true

@@ -1,0 +1,8 @@
+---
+# handlers file for ansible-ossec-server
+- name: restart ossec
+  service:
+    name: "ossec"
+    state: "restarted"
+    enabled: true
+  become: true

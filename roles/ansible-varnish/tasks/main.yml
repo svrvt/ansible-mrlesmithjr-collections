@@ -1,0 +1,12 @@
+---
+# tasks file for ansible-varnish
+
+- name: Setting Facts
+  include_tasks: set_facts.yml
+
+- name: Debian Tasks
+  include_tasks: debian.yml
+  when: ansible_os_family == "Debian"
+
+- name: Configure Varnish
+  include_tasks: config.yml

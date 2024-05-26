@@ -1,0 +1,9 @@
+---
+- name: system_settings | Enabling System Settings
+  sysctl:
+    name: "{{ item['name'] }}"
+    value: "{{ item['value'] }}"
+    state: "present"
+    reload: true
+  become: true
+  with_items: '{{ bird_system_settings }}'

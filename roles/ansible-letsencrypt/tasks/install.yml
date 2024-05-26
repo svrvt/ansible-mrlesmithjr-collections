@@ -1,0 +1,50 @@
+---
+- name: install | Ensuring Letsencrypt Directories Exist
+  file:
+    path: "{{ letsencrypt_directory+'/'+item }}"
+    state: directory
+  become: true
+  loop:
+    - certs
+    - private
+
+- name: install | Certbot Request SSL Cert(s) - (Dry-Run)
+  command: certbot certonly --standalone --noninteractive --dry-run --agree-tos --email {{ letsencrypt_admin_email }} -d {{ item }}
+  become: true
+  args:
+    creates: "/etc/letsencrypt/live/{{ item }}"
+  loop: "{{ letsencrypt_domains }}"
+  when: letsencrypt_dry_run|bool
+
+- name: install | Certbot Request SSL Cert(s)
+  command: certbot certonly --standalone --noninteractive --agree-tos --email {{ letsencrypt_admin_email }} -d {{ item }}
+  become: true
+  args:
+    creates: "/etc/letsencrypt/live/{{ item }}"
+  loop: "{{ letsencrypt_domains }}"
+  when: not letsencrypt_dry_run|bool
+
+# https://wiki.openssl.org/index.php/Manual:Dhparam(1)
+- name: install | Generating  DHParams
+  command: "openssl dhparam -out {{ letsencrypt_dhparam_file }} {{ letsencrypt_dhparam_numbits }}"
+  args:
+    creates: "{{ letsencrypt_dhparam_file }}"
+  become: true
+
+- name: install | Adding Certbot Cron Job For SSL Cert Renewal (Dry-Run)
+  cron:
+    name: "{{ 'certbot_renewal_'+item|replace('.','_') }}"
+    special_time: weekly
+    job: certbot certonly --renew --standalone --noninteractive --dry-run --agree-tos --email {{ letsencrypt_admin_email }} -d {{ item }}
+  become: true
+  loop: "{{ letsencrypt_domains }}"
+  when: letsencrypt_dry_run|bool
+
+- name: install | Adding Certbot Cron Job For SSL Cert Renewal
+  cron:
+    name: "{{ 'certbot_renewal_'+item|replace('.','_') }}"
+    special_time: weekly
+    job: certbot certonly --renew --standalone --noninteractive --agree-tos --email {{ letsencrypt_admin_email }} -d {{ item }}
+  become: true
+  loop: "{{ letsencrypt_domains }}"
+  when: not letsencrypt_dry_run|bool

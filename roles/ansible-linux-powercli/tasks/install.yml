@@ -1,0 +1,63 @@
+---
+# - name: install | Ensuring $HOME/.local/share/powershell/Modules Exists
+#   file:
+#     path: $HOME/.local/share/powershell/Modules
+#     state: directory
+#
+# - name: install | Ensuring $HOME/.local/share/powershell/Modules Exists
+#   file:
+#     path: $HOME/.local/share/powershell/Modules
+#     state: directory
+#   become: true
+#
+# - name: install | Extracting PowerCLI
+#   unarchive:
+#     src: https://download3.vmware.com/software/vmw-tools/powerclicore/PowerCLI_Core.zip
+#     dest: $HOME/.local/share/powershell/Modules/
+#     remote_src: true
+#     creates: $HOME/.local/share/powershell/Modules/Start-PowerCLI.ps1
+#   register: _powercli_extracted_std_user
+#
+# - name: install | Extracting PowerCLI
+#   unarchive:
+#     src: https://download3.vmware.com/software/vmw-tools/powerclicore/PowerCLI_Core.zip
+#     dest: $HOME/.local/share/powershell/Modules/
+#     remote_src: true
+#     creates: $HOME/.local/share/powershell/Modules/Start-PowerCLI.ps1
+#   become: true
+#   register: _powercli_extracted_root_user
+#
+# - name: install | Extracting PowerCLI Modules
+#   unarchive:
+#     src: $HOME/.local/share/powershell/Modules/{{ item }}.zip
+#     dest: $HOME/.local/share/powershell/Modules/
+#     remote_src: true
+#   register: _powercli_modules_extracted_std_user
+#   with_items:
+#     - PowerCLI.Vds
+#     - PowerCLI.ViCore
+#   when: _powercli_extracted_std_user['changed']
+#
+# - name: install | Extracting PowerCLI Modules
+#   unarchive:
+#     src: $HOME/.local/share/powershell/Modules/{{ item }}.zip
+#     dest: $HOME/.local/share/powershell/Modules/
+#     remote_src: true
+#   become: true
+#   register: _powercli_modules_extracted_root_user
+#   with_items:
+#     - PowerCLI.Vds
+#     - PowerCLI.ViCore
+#   when: _powercli_extracted_root_user['changed']
+
+- name: install | Copying Powershell Script To Install VMware.PowerCLI Modules
+  copy:
+    src: files/install_vmware_powercli_modules.ps1
+    dest: $HOME/install_vmware_powercli_modules.ps1
+  become: true
+  register: _powercli_modules_script
+
+- name: install | Installing VMware.PowerCLI Modules
+  command: powershell -F $HOME/install_vmware_powercli_modules.ps1
+  become: true
+  # when: _powercli_modules_script['changed']

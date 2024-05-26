@@ -1,0 +1,18 @@
+---
+- name: debian | Adding OSSEC Repo Key
+  apt_key:
+    url: "{{ osssec_server_debian_repo_info['key'] }}"
+    state: "present"
+  become: true
+
+- name: debian | Adding OSSEC Repo
+  apt_repository:
+    repo: "{{ osssec_server_debian_repo_info['repo'] }}"
+    state: "present"
+  become: true
+
+- name: debian | Installing OSSEC Server/Manager
+  apt:
+    name: "ossec-hids"
+    state: "present"
+  become: true

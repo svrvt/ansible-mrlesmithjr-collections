@@ -1,0 +1,58 @@
+---
+- name: debian | Adding Pre-Reqs
+  apt:
+    name:
+      - apt-transport-https
+    state: present
+  become: true
+  register: result
+  until: result is successful
+
+- name: debian | Adding Microsoft repo key
+  apt_key:
+    url: https://packages.microsoft.com/keys/microsoft.asc
+    state: present
+  become: true
+  register: result
+  until: result is successful
+
+- name: debian | Adding MSSQL repo
+  apt_repository:
+    repo: "{{ mssql_repo }}"
+    state: present
+  become: true
+  register: result
+  until: result is successful
+  retries: 5
+
+- name: debian | Adding MSSQL tools repo
+  apt_repository:
+    repo: " {{ mssql_tools_repo }}"
+    state: present
+  become: true
+  register: result
+  until: result is successful
+  retries: 5
+
+- name: debian | Installing MSSQL
+  apt:
+    name:
+      - mssql-server
+    state: present
+  environment:
+    ACCEPT_EULA: "y"
+  become: true
+  register: result
+  until: result is successful
+
+- name: debian | Installing MSSQL Tools
+  apt:
+    name:
+      - mssql-tools
+      - unixodbc-dev
+    state: present
+  environment:
+    ACCEPT_EULA: "y"
+  become: true
+  register: result
+  until: result is successful

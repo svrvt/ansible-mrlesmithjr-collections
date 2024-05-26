@@ -1,0 +1,36 @@
+---
+# defaults file for ansible-cobbler
+cobbler_default_password_crypted: '$1$mF86/UHC$WvcIcX2t6crBz2onWxyac.'
+
+cobbler_next_server: "{{ hostvars[inventory_hostname]['ansible_enp0s8']['ipv4']['address'] }}"
+cobbler_redhat_pre_reqs:
+  # - 'createrepo'
+  - 'debmirror'
+  - 'dnsmasq'
+  # - 'fence-agents'
+  # - 'httpd'
+  # - 'mkisofs'
+  # - 'mod_ssl'
+  # - 'mod_wsgi'
+  # - 'perl-Compress-Raw-Zlib'
+  # - 'perl-Digest-MD5'
+  # - 'perl-Digest-SHA'
+  # - 'perl-IO-Compress'
+  # - 'perl-LockFile-Simple'
+  # - 'perl-LWP-Protocol-https'
+  # - 'perl-Net-INET6Glue'
+  - 'pykickstart'
+  # - 'python-cheetah'
+  # - 'python-netaddr'
+  # - 'python-simplejson'
+  # - 'python-urlgrabber'
+  # - 'PyYAML'
+  # - 'rsync'
+  # - 'setroubleshoot-server'
+  - 'syslinux'
+  # - 'tftp-server'
+  # - 'wget'
+  - 'xinetd'
+  # - 'yum-utils'
+
+cobbler_server_listen_ip: "{{ hostvars[inventory_hostname]['ansible_enp0s8']['ipv4']['address'] }}"

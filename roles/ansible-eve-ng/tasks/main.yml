@@ -1,0 +1,158 @@
+---
+# tasks file for ansible-eve-ng
+- name: Ensuring Host Is Ubuntu Xenial
+  assert:
+    that:
+      - ansible_distribution|lower == "ubuntu"
+      - ansible_distribution_release|lower == "xenial"
+    fail_msg: OS Must Be Ubuntu Xenial (16.04)
+
+- name: Ensuring eth0 Exists
+  stat:
+    path: /sys/class/net/eth0
+  register: eve_ng_eth0_check
+
+- name: Enabling ethx Interfaces
+  lineinfile:
+    dest: /etc/default/grub
+    regexp: ^GRUB_CMDLINE_LINUX
+    line: GRUB_CMDLINE_LINUX="net.ifnames=0 biosdevname=0"
+  become: true
+  register: eve_ng_grub
+  when:
+    - not eve_ng_eth0_check['stat']['exists']
+
+- name: Reconfiguring Grub
+  command: grub-mkconfig -o /boot/grub/grub.cfg
+  become: true
+  when:
+    - eve_ng_grub is changed
+
+- name: Configuring /etc/network/interfaces
+  copy:
+    dest: /etc/network/interfaces
+    content: |
+      # This file describes the network interfaces available on your system
+      # and how to activate them. For more information, see interfaces(5).
+
+      # The loopback network interface
+      auto lo
+      iface lo inet loopback
+
+      # The primary network interface
+      iface eth0 inet dhcp
+      auto eth0
+  become: true
+  register: eve_ng_network
+  when:
+    - not eve_ng_eth0_check['stat']['exists']
+
+- name: Rebooting Host
+  reboot:
+  become: true
+  when:
+    - eve_ng_grub is changed or eve_ng_network is changed
+
+- name: Waiting For Connection
+  wait_for_connection:
+
+- name: Ensuring eth0 Exists
+  stat:
+    path: /sys/class/net/eth0
+  register: eve_ng_eth0_check
+
+- name: Fail If eth0 Missing
+  assert:
+    that:
+      - eve_ng_eth0_check['stat']['exists']
+    fail_msg: Interface eth0 not found
+
+- name: Updating /etc/hosts
+  copy:
+    dest: /etc/hosts
+    content: |
+      127.0.0.1   localhost
+      127.0.1.1   eve-ng.{{ eve_ng_pri_domain }}  eve-ng
+      # The following lines are desirable for IPv6 capable hosts
+  become: true
+
+- name: Setting Hostname To eve-ng
+  hostname:
+    name: eve-ng
+  become: true
+  register: eve_ng_hostname
+
+- name: Rebooting Host
+  reboot:
+  become: true
+  when: eve_ng_hostname is changed
+
+- name: Waiting For Connection
+  wait_for_connection:
+
+- name: Setting root Password To eve
+  user:
+    name: root
+    password: $6$3s7nKfffn$d.ZsCmP3.8KCyGKgZ4lBUeLfsO9iHm7/PYrR5V54ns52aiRYli4EaXasT4oJPvDm/OfN8XssU.CEju95CWCVg.
+  become: true
+
+- name: Ensuring SSH root Login Is Allowed
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: ^PermitRootLogin
+    line: PermitRootLogin yes
+    state: present
+  become: true
+  notify:
+    - restart ssh
+
+- name: Adding Eve-NG Repo Key
+  apt_key:
+    url: http://www.eve-ng.net/repo/eczema@ecze.com.gpg.key
+    state: present
+  become: true
+
+- name: Updating Apt-Cache
+  apt:
+    update_cache: true
+  become: true
+
+- name: Installing Pre-Reqs
+  apt:
+    name: ["software-properties-common"]
+    state: present
+  become: true
+  register: result
+  until: result is successful
+
+- name: Adding Eve-NG Repo
+  apt_repository:
+    repo: deb [arch=amd64] http://www.eve-ng.net/repo xenial main
+    state: present
+  become: true
+  register: result
+  until: result is successful
+
+- name: Installing Eve-NG
+  apt:
+    name: eve-ng
+    state: present
+  become: true
+  register: result
+  until: result is successful
+  environment:
+    DEBIAN_FRONTEND: noninteractive
+  notify:
+    - restart mysql
+# - name: Checking If Eve-NG Is Configured
+#   stat:
+#     dest: /opt/ovf/.configured
+#   register: eve_ng_config_check
+
+# - name: Marking Eve-NG As Configured
+#   file:
+#     dest: /opt/ovf/.configured
+#     state: touch
+#   become: true
+#   when:
+#     - not eve_ng_config_check['stat']['exists']

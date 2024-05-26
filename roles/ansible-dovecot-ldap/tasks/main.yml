@@ -1,0 +1,6 @@
+---
+# tasks file for ansible-dovecot-ldap
+- include: debian.yml
+  when: ansible_os_family == "Debian"
+
+- include: config_dovecot.yml

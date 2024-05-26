@@ -1,0 +1,27 @@
+---
+- name:           debian | Installing Pre-Reqs
+  apt:
+    name:         "{{ item }}"
+    state:        present
+  become:         true
+  with_items:
+    - apt-transport-https
+    - cron
+
+- name:           debian | Adding Elasticsearch Curator Repo Key
+  apt_key:
+    url:          "{{ es_curator_repo_key }}"
+    state:        present
+  become:         true
+
+- name:           debian | Adding Elasticsearch Curator Repo
+  apt_repository:
+    repo:         "{{ es_curator_debian_repo }}"
+    state:        present
+  become:         true
+
+- name:           debian | Installing Elasticsearch Curator {{ es_curator_minor_version }}
+  apt:
+    name:         "elasticsearch-curator={{ es_curator_minor_version }}"
+    state:        present
+  become:         true

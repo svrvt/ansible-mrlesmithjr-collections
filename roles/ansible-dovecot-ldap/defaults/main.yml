@@ -1,0 +1,19 @@
+---
+# defaults file for ansible-dovecot-ldap
+dc_1: 'etsbv'
+dc_2: 'internal'
+dovecot_ldap_auth_bind: true
+dovecot_ldap_base: 'ou=users,dc={{ dc_1 }},dc={{ dc_2 }}'
+dovecot_ldap_dn: 'cn=administrator,dc={{ dc_1 }},dc={{ dc_2 }}'
+dovecot_ldap_hosts:
+  - '10.0.101.101:389'
+  - '10.0.101.102:389'
+dovecot_ldap_scope: 'subtree'
+dovecot_ldap_tls: false
+dovecot_ldap_version: 3
+dovecot_ubuntu_packages:
+  - 'dovecot-core'
+  - 'dovecot-imapd'
+  - 'dovecot-ldap'
+  - 'dovecot-pop3d'
+pri_domain_name: '{{ dc_1 }}.{{ dc_2 }}'

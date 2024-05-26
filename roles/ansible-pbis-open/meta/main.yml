@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  author: Larry Smith Jr.
+  description: An Ansible role to install PowerBroker Identity Services Open Edition
+  license: MIT
+
+  min_ansible_version: 2.4
+
+  platforms:
+    - name: Debian
+      versions:
+        - jessie
+        - stretch
+    - name: Ubuntu
+      versions:
+        - bionic
+        - trusty
+        - xenial
+
+  galaxy_tags: []
+
+dependencies: []

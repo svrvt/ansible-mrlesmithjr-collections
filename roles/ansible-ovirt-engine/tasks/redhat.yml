@@ -1,0 +1,16 @@
+---
+- name: redhat | Adding oVirt Repo
+  yum:
+    name: http://resources.ovirt.org/pub/yum-repo/ovirt-release43.rpm
+    state: present
+  become: true
+  register: result
+  until: result is successful
+
+- name: redhat | Installing oVirt
+  yum:
+    name: ["ovirt-engine"]
+    state: present
+  become: true
+  register: result
+  until: result is successful

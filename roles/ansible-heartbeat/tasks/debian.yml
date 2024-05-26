@@ -1,0 +1,6 @@
+---
+- name: debian | Installing Heartbeat Package
+  apt:
+    name: heartbeat
+    state: present
+  become: true

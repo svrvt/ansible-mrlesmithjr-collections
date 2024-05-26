@@ -1,0 +1,13 @@
+---
+# We need to install from backports in order to use a preseed to configure LXD
+# as of right now.
+- name:              debian | Installing Packages
+  apt:
+    name:            "{{ item }}"
+    state:           present
+    default_release: "{{ ansible_distribution_release|lower }}-backports"
+  become:            true
+  with_items:
+    - bridge-utils
+    - lxd
+    - lxd-client

@@ -1,0 +1,6 @@
+---
+- name: service | Ensuring heartbeat Service Is Enabled On Boot
+  service:
+    name: heartbeat
+    enabled: true
+  become: true

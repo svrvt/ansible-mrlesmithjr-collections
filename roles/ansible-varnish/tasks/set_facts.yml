@@ -1,0 +1,15 @@
+---
+- name: set_facts | Setting Ubuntu Varnish Version
+  set_fact:
+    _varnish_version: "{{ varnish_minor_version }}-1"
+  when: >
+        ansible_distribution|lower == "ubuntu" and
+        (varnish_minor_version|version_compare('5.1.1', '>=') and
+          varnish_minor_version|version_compare('5.1.2', '<='))
+
+- name: set_facts | Setting Ubuntu Varnish Version
+  set_fact:
+    _varnish_version: "{{ varnish_minor_version }}-1~{{ ansible_distribution_release|lower }}"
+  when: >
+        ansible_distribution|lower == "ubuntu" and
+        varnish_minor_version|version_compare('5.1.3', '>=')

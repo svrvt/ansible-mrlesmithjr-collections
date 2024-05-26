@@ -1,0 +1,7 @@
+---
+collections:
+  - name: networktocode.nautobot
+roles:
+  - name: mrlesmithjr.ansible_bootstrap_python
+  - name: mrlesmithjr.postgresql
+  - name: mrlesmithjr.redis

@@ -1,0 +1,17 @@
+---
+- name: Config Dovecot | Configuring Dovecot
+  template:
+    src: "etc/dovecot/dovecot.conf.j2"
+    dest: "/etc/dovecot/dovecot.conf"
+  notify:
+    - "restart dovecot"
+
+- name: Config Dovecot | Configuring Dovecot LDAP
+  template:
+    src: "etc/dovecot/dovecot-ldap.conf.ext.j2"
+    dest: "/etc/dovecot/dovecot-ldap.conf"
+    owner: "root"
+    group: "dovecot"
+    mode: 0600
+  notify:
+    - "restart dovecot"

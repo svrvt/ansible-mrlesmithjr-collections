@@ -1,0 +1,3 @@
+---
+# defaults file for ansible-ovirt-engine
+ovirt_engine_firewall_manager: firewalld

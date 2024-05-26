@@ -1,0 +1,18 @@
+---
+# defaults file for ansible-rudder
+rudder_apt_key: "{{ rudder_key_url+'/apt/rudder_apt_key.pub' }}"
+rudder_apt_repo: "{{ 'deb http://'+rudder_dl_site+'/apt/'+rudder_version|string+'/ '+ansible_distribution_release+' main' }}"
+
+rudder_dl_site: repository.rudder.io
+
+# Defines Ansible group to use for determining rudder_root_server
+rudder_group: all
+
+rudder_key_url: "{{ 'https://'+rudder_dl_site }}"
+
+rudder_root_server: "{{ groups[rudder_group][0] }}"
+
+rudder_rpm_key: "{{ rudder_key_url+'/rpm/rudder_rpm_key.pub' }}"
+rudder_rpm_repo: "{{ 'http://'+rudder_dl_site+'/rpm/'+rudder_version|string+'/RHEL_$releasever/' }}"
+
+rudder_version: 6.0

@@ -1,0 +1,16 @@
+---
+# defaults file for ansible-puppet-agent
+
+puppet_agent_config:
+  environment: production
+  runinterval: 1h
+  server: 192.168.250.10
+  sourceaddress: "{{ hostvars[inventory_hostname]['ansible_' + puppet_agent_interface ]['ipv4']['address'] }}"
+
+puppet_agent_interface: enp0s8
+
+puppet_agent_major_version: 5
+
+puppet_agent_minor_version: 5.5.0
+
+puppet_agent_pri_domain_name: vagrant.local

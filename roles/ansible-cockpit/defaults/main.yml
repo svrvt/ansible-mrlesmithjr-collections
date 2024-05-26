@@ -1,0 +1,5 @@
+---
+# defaults file for ansible-cockpit
+cockpit_debian_packages:
+  - cockpit
+  # - cockpit-docker

@@ -1,0 +1,19 @@
+---
+# defaults file for ansible-heartbeat
+
+heartbeat_group: test_nodes
+
+heartbeat_resources:
+  - preferred_node: "{{ groups[heartbeat_group][0] }}"
+    scripts:
+      - script: IPaddr
+        parameter: 192.168.250.100
+      - script: drbddisk
+        parameters:
+          - r0
+      - script: Filesystem
+        parameters:
+          - /dev/drbd0
+          - /opt/nfs
+          - ext4
+          - noatime

@@ -1,0 +1,10 @@
+---
+- name: firewall | Managing Firewall
+  firewalld:
+    service: "{{ item['service'] }}"
+    permanent: "{{ item['permanent'] }}"
+    source: "{{ item['source']|default(omit) }}"
+    state: "{{ item['state'] }}"
+    zone: "{{ item['zone']|default('public') }}"
+  become: true
+  with_items: '{{ cobbler_firewall_rules }}'

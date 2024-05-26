@@ -1,0 +1,24 @@
+dict {
+  #quota = mysql:/etc/dovecot/dovecot-dict-sql.conf.ext
+  #expire = sqlite:/etc/dovecot/dovecot-dict-sql.conf.ext
+}
+
+auth_debug = yes
+auth_debug_passwords = yes
+auth_verbose = yes
+mail_debug = yes
+disable_plaintext_auth = no
+mail_privileged_group = mail
+mail_location = mbox:~/mail:INBOX=/var/mail/%u
+passdb {
+  driver=ldap
+  args = /etc/dovecot/dovecot-ldap.conf
+}
+userdb {
+  driver=ldap
+  args = /etc/dovecot/dovecot-ldap.conf
+}
+protocols = imap
+
+ssl_key = </etc/dovecot/private/dovecot.pem
+ssl_cert = </etc/dovecot/dovecot.pem

@@ -1,0 +1,30 @@
+---
+- name: Converge - Pre-req Roles
+  hosts: all
+  vars:
+    postgresql_dbs:
+      - name: nautobot
+        state: present
+    postgresql_users:
+      - name: nautobot
+        db: nautobot
+        password: nautobot
+        state: present
+    redis_bind_addresses:
+      - 0.0.0.0
+    redis_config_redis: true
+  tasks:
+    - name: Include mrlesmithjr.postgresql
+      include_role:
+        name: mrlesmithjr.postgresql
+
+    - name: Include mrlesmithjr.redis
+      include_role:
+        name: mrlesmithjr.redis
+
+- name: Converge
+  hosts: all
+  tasks:
+    - name: Include mrlesmithjr.nautobot
+      include_role:
+        name: mrlesmithjr.nautobot

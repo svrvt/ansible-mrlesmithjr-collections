@@ -1,0 +1,8 @@
+{{ ansible_managed|comment }}
+
+[agent]
+certname      = {{ inventory_hostname_short }}.{{ puppet_agent_pri_domain_name }}
+environment   = {{ puppet_agent_config['environment'] }}
+runinterval   = {{ puppet_agent_config['runinterval'] }}
+server        = {{ puppet_agent_config['server'] }}
+sourceaddress = {{ puppet_agent_config['sourceaddress'] }}

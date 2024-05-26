@@ -1,0 +1,35 @@
+---
+- name: service | Configuring etcd systemd
+  template:
+    src: lib/systemd/system/etcd.service.j2
+    dest: /lib/systemd/system/etcd.service
+    owner: root
+    group: root
+    mode: u=rw,g=r,o=r
+  become: true
+  register: etcd_configured
+  when:
+    - ansible_service_mgr == 'systemd'
+    - etcd_config|bool
+
+- name: service | Ensuring etcd Service Is Enabled and Starts On Boot
+  service:
+    name: etcd
+    enabled: true
+  become: true
+
+- name: service | daemon-reload etcd # noqa 503
+  systemd:
+    name: etcd
+    daemon_reload: true
+  become: true
+  when: etcd_configured['changed']
+
+- name: service | Restarting etcd # noqa 503
+  service:
+    name: etcd
+    state: restarted
+  become: true
+  when: >
+    (etcd_configured['changed'] or
+    etcd_reset_cluster|bool)

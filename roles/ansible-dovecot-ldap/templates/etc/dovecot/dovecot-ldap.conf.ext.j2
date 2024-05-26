@@ -1,0 +1,11 @@
+hosts = {{ dovecot_ldap_hosts|join (' ') }}
+base = {{ dovecot_ldap_base }}
+scope = {{ dovecot_ldap_scope }}
+dn = {{ dovecot_ldap_dn }}
+{% if dovecot_ldap_tls %}
+tls = yes
+{% endif %}
+{% if dovecot_ldap_auth_bind %}
+auth_bind = yes
+{% endif %}
+ldap_version = {{ dovecot_ldap_version }}

@@ -1,0 +1,16 @@
+[Unit]
+Description=consul client
+Requires=network-online.target
+After=network-online.target
+
+[Service]
+User={{ consul_client_user_info.user }}
+Group={{ consul_client_user_info.group }}
+Environment=GOMAXPROCS=2
+Restart=on-failure
+ExecStart={{ consul_client_install_dir }}/consul agent $OPTIONS -config-dir={{ consul_client_config_dir }}/client
+ExecReload=/bin/kill -HUP $MAINPID
+KillSignal=SIGINT
+
+[Install]
+WantedBy=multi-user.target

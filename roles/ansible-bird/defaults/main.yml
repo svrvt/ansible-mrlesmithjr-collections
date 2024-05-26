@@ -1,0 +1,38 @@
+---
+# defaults file for ansible-bird
+bird_bgp_config:
+  - host: 'node0'
+    import: 'all'
+    local_as: 64490
+    name: 'node0_node1'
+    neighbor: 192.168.250.11
+    neighbor_as: 64491
+  - host: 'node0'
+    import: 'all'
+    local_as: 64480
+    name: 'node0_node2'
+    neighbor: 192.168.250.12
+    neighbor_as: 64492
+  - host: 'node1'
+    import: 'all'
+    local_as: 64491
+    name: 'node1_node0'
+    neighbor: 192.168.250.10
+    neighbor_as: 64490
+  - host: 'node2'
+    import: 'all'
+    local_as: 64492
+    name: 'node2_node0'
+    neighbor: 192.168.250.10
+    neighbor_as: 64480
+
+bird_router_id: "{{ hostvars[inventory_hostname]['ansible_enp0s8']['ipv4']['address'] }}"
+bird_system_settings:
+  - name: 'net.ipv4.conf.all.forwarding'
+    value: 1
+  - name: 'net.ipv4.conf.default.forwarding'
+    value: 1
+  - name: 'net.ipv6.conf.all.forwarding'
+    value: 1
+  - name: 'net.ipv6.conf.default.forwarding'
+    value: 1

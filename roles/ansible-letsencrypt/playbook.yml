@@ -1,0 +1,7 @@
+---
+- name: Example Playbook
+  hosts: all
+  tasks:
+    - name: Include ansible-letsencrypt
+      include_role:
+        name: ansible-letsencrypt

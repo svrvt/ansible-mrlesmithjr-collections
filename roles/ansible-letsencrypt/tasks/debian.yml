@@ -1,0 +1,25 @@
+---
+- name: debian | Installing Pre-Reqs
+  apt:
+    name:
+      - openssl
+      - software-properties-common
+    state: present
+  become: true
+  register: result
+  until: result is successful
+
+- name: debian | Adding Certbot Repo
+  apt_repository:
+    repo: ppa:certbot/certbot
+    state: present
+  become: true
+  when: ansible_distribution == "Ubuntu"
+
+- name: debian | Installing Certbot
+  apt:
+    name: certbot
+    state: present
+  become: true
+  register: result
+  until: result is successful

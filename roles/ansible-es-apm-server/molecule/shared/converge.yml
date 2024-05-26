@@ -1,0 +1,9 @@
+---
+- name: Converge
+  hosts: all
+  vars:
+    es_apm_server_config: true
+  tasks:
+    - name: Include ansible-es-apm-server
+      include_role:
+        name: ansible-es-apm-server

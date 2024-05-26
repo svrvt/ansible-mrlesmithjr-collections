@@ -1,0 +1,121 @@
+---
+# defaults file for ansible-lxd
+
+lxd_configuration:
+  config:
+    # Number of seconds after which an unresponsive node is considered offline
+    # cluster.offline_threshold:  20
+
+    # Address to bind for the remote API
+    core.https_address:           "{{ hostvars[inventory_hostname]['ansible_' + lxd_listen_interface]['ipv4']['address'] }}:8443"
+
+    # Whether to set Access-Control-Allow-Credentials http header value to "true"
+    # core.https_allowed_credentials: "true"
+
+    # Access-Control-Allow-Headers http header value
+    # core.https_allowed_headers: []
+
+    # Access-Control-Allow-Methods http header value
+    # core.https_allowed_methods: []
+
+    # Access-Control-Allow-Origin http header value
+    # core.https_allowed_origin:  []
+
+    # URL of the the external authentication endpoint using Macaroons
+    # core.macaroon.endpoint:     []
+
+    # https proxy to use, if any (falls back to HTTPS_PROXY environment variable)
+    # core.proxy_https:           []
+
+    # http proxy to use, if any (falls back to HTTP_PROXY environment variable)
+    # core.proxy_http:            []
+
+    # hosts which don't need the proxy for use (similar format to NO_PROXY
+    # e.g. 1.2.3.4,1.2.3.5, falls back to NO_PROXY environment variable)
+    # core.proxy_ignore_hosts:    []
+
+    # Password to be provided by clients to setup a trust
+    core.trust_password:          sekret
+
+    # Whether to automatically update any image that LXD caches
+    images.auto_update_cached:    "true"
+
+    # Interval in hours at which to look for update to cached images (0 disables it)
+    images.auto_update_interval:  6
+
+    # Compression algorithm to use for new images (bzip2, gzip, lzma, xz or none)
+    images.compression_algorithm: gzip
+
+    # Number of days after which an unused cached remote image will be flushed
+    images.remote_cache_expiry:   10
+
+    # API key to manage MAAS
+    # maas.api.key:               []
+
+    # URL of the MAAS server
+    # maas.api.url:               []
+
+    # Name of this LXD host in MAAS
+    # maas.machine:               hostname
+
+  networks:
+  - name:                         lxd-my-bridge
+    type:                         bridge
+    config:
+      ipv4.address:               auto
+      ipv6.address:               none
+
+  profiles:
+    - name:                       default
+      devices:
+        root:
+          path:                   /
+          pool:                   data
+          type:                   disk
+    - name:                       test-profile
+      description:                "Test profile"
+      config:
+        limits.memory:            2GB
+      devices:
+        test0:
+          name:                   test0
+          nictype:                bridged
+          parent:                 lxd-my-bridge
+          type:                   nic
+
+  storage_pools:
+    - name:                       data
+      driver:                     dir
+      config:
+        source:                   /data
+
+
+# Defines the listen interface for LXD
+lxd_listen_interface:             enp0s8
+
+lxd_preseed_file:                 /etc/lxd/preseed.yml
+
+lxd_sysctl_settings:
+  # This specifies an upper limit on the number of events that can be queued to
+  # the corresponding inotify instance
+  fs.inotify.max_queued_events:   1048576
+
+  # This specifies an upper limit on the number of inotify instances that can
+  # be created per real user ID
+  fs.inotify.max_user_instances:  1048576
+
+  # This specifies an upper limit on the number of watches that can be created
+  # per real user ID
+  fs.inotify.max_user_watches:    1048576
+
+  # This file contains the maximum number of memory map areas a process may have.
+  # Memory map areas are used as a side-effect of calling malloc, directly by
+  # mmap and mprotect, and also when loading shared libraries
+  vm.max_map_count:               262144
+
+  # This denies container access to the messages in the kernel ring buffer.
+  # Please note that this also will deny access to non-root users on the host system
+  kernel.dmesg_restrict:          1
+
+
+  net.core.netdev_max_backlog:    182757

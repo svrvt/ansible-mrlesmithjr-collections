@@ -1,0 +1,34 @@
+---
+- name:           config | Ensuring /etc/curator Directory Exists
+  file:
+    path:         /etc/curator
+    state:        directory
+  become:         true
+
+- name:           config | Configuring Elasticsearch Curator Actions
+  template:
+    src:          actions.yml.j2
+    dest:         /etc/curator/actions.yml
+  become:         true
+
+- name:           config | Configuring Elasticsearch Curator
+  template:
+    src:          config.yml.j2
+    dest:         /etc/curator/config.yml
+  become:         true
+
+- name:           config | Adding curator service account
+  user:
+    name:         curator
+    system:       true
+  become:         true
+
+- name:           config | Configuring Cron Job
+  cron:
+    name:         Elasticsearch Curator
+    special_time: hourly
+    user:         curator
+    job:          "$(which curator) --config /etc/curator/config.yml /etc/curator/actions.yml"
+    cron_file:    elasticsearch_curator
+    state:        present
+  become:         true

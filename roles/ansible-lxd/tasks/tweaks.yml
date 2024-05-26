@@ -1,0 +1,9 @@
+---
+- name:      tweaks | Managing sysctl Settings
+  sysctl:
+    name:    "{{ item['key'] }}"
+    value:   "{{ item['value'] }}"
+    state:   present
+    reload:  true
+  become:    true
+  with_dict: "{{ lxd_sysctl_settings }}"

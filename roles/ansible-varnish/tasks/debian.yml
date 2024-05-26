@@ -1,0 +1,18 @@
+---
+- name: debian | Adding Varnish Repo Key
+  apt_key:
+    url: "{{ varnish_debian_repo_info['key'] }}"
+    state: present
+  become: true
+
+- name: debian | Adding Varnish Repo
+  apt_repository:
+    repo: "{{ varnish_debian_repo_info['repo'] }}"
+    state: present
+  become: true
+
+- name: debian | Installing Varnish
+  apt:
+    name: "varnish={{ _varnish_version }}"
+    state: present
+  become: true

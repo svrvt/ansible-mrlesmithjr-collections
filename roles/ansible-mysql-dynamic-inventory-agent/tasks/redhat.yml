@@ -1,0 +1,16 @@
+---
+- name: redhat | Enabling EPEL-RELEASE
+  yum:
+    name: epel-release
+    state: present
+  become: true
+  register: result
+  until: result is successful
+
+- name: redhat | Installing python-pip
+  yum:
+    name: python-pip
+    state: present
+  become: true
+  register: result
+  until: result is successful

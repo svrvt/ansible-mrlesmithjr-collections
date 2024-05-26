@@ -1,0 +1,7 @@
+---
+# handlers file for ansible-cobbler
+- name: restart cobbler
+  service:
+    name: "cobblerd"
+    state: "restarted"
+  become: true

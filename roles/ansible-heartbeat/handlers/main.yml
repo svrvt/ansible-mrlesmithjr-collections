@@ -1,0 +1,8 @@
+---
+# handlers file for ansible-heartbeat
+
+- name: restart heartbeat
+  service:
+    name: heartbeat
+    state: restarted
+  become: true

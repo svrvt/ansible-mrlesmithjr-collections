@@ -1,0 +1,8 @@
+---
+# tasks file for ansible-cobbler
+- include: redhat.yml
+  when: ansible_os_family == "RedHat"
+
+- include: config.yml
+
+# - include: firewall.yml

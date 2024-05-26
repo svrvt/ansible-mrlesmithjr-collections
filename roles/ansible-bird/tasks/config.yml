@@ -1,0 +1,16 @@
+---
+- name: config | Configuring BIRD
+  template:
+    src: "etc/bird/bird.conf.j2"
+    dest: "/etc/bird/bird.conf"
+    owner: "bird"
+    group: "bird"
+    mode: "u=rw,g=r,o="
+  become: true
+  notify: "restart bird"
+
+- name: config | Ensuring BIRD Is Enabled On Boot
+  service:
+    name: "bird"
+    enabled: true
+  become: true

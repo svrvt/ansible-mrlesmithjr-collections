@@ -1,0 +1,33 @@
+# {{ ansible_managed }}
+
+$verbose=0;
+$progress=0;
+$debug=0;
+$host="ftp.debian.org";
+$user="anonymous";
+$passwd="anonymous@";
+$remoteroot="debian";
+$download_method="ftp";
+# @dists="sid";
+@sections="main,main/debian-installer,contrib,non-free";
+# @arches="i386";
+$omit_suite_symlinks=0;
+$skippackages=0;
+$i18n=0;
+$getcontents=0;
+$do_source=1;
+$max_batch=0;
+$state_cache_days=0;
+$ignore_release_gpg=0;
+$ignore_release=0;
+$check_md5sums=0;
+$ignore_small_errors=0;
+$cleanup=0;
+$post_cleanup=1;
+$timeout=300;
+$rsync_batch=200;
+$rsync_options="-aIL --partial";
+$passive=0;
+$dry_run=0;
+$diff_mode="use";
+1;

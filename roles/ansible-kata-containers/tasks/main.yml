@@ -1,0 +1,10 @@
+---
+# tasks file for ansible-kata-containers
+- include_tasks: debian.yml
+  when: ansible_os_family == "Debian"
+
+- include_tasks: redhat.yml
+  when: ansible_os_family == "RedHat"
+
+- include_tasks: config.yml
+  when: kata_containers_config

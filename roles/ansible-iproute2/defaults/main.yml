@@ -1,0 +1,8 @@
+---
+# defaults file for ansible-iproute2
+
+iproute2_vrfs:
+  mgmt:
+    id: 1
+  blue:
+    id: 10

@@ -1,0 +1,30 @@
+---
+# Captures brief details on all VRFs currently configured
+- name: vrfs | Capturing All VRFs Currently Configured
+  shell: ip -br link show type vrf | awk '{ print $1}'
+  become: true
+  changed_when: false
+  register: _iproute2_vrfs
+
+- name: vrfs | Creating VRFs
+  command: ip link add dev {{ item['key'] }} type vrf table {{ item['value']['id'] }}
+  become: true
+  with_dict: "{{ iproute2_vrfs }}"
+  when: >
+        iproute2_vrfs is defined and
+        item['key'] not in _iproute2_vrfs['stdout_lines']
+
+- name: vrfs | Capturing All VRFs Currently Configured
+  shell: ip -br link show type vrf | awk '{ print $1}'
+  become: true
+  changed_when: false
+  register: _iproute2_vrfs_configured
+
+- name: vrfs | Capturing VRFs
+  command: ip -br link show type vrf {{ item }}
+  become: true
+  changed_when: false
+  register: _iproute2_vrf_details
+  with_items: "{{ _iproute2_vrfs_configured['stdout_lines'] }}"
+
+- debug: var=_iproute2_vrf_details

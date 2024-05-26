@@ -1,0 +1,14 @@
+---
+# tasks file for ansible-etcd
+- include_tasks: set_facts.yml
+
+- include_tasks: reset_cluster.yml
+  when: etcd_reset_cluster
+
+- include_tasks: debian.yml
+  when: ansible_os_family == "Debian"
+
+- include_tasks: redhat.yml
+  when: ansible_os_family == "RedHat"
+
+- include_tasks: service.yml

@@ -1,0 +1,23 @@
+---
+- name: agent | Installing Python mysql-connector Module
+  pip:
+    name: mysql-connector
+    state: present
+  become: true
+  register: result
+  until: result is successful
+
+- name: agent | Running Agent
+  mysql_dynamic_inventory_agent:
+    dbhost: "{{ mysql_dynamic_inventory_agent_dbhost }}"
+    dbpass: "{{ mysql_dynamic_inventory_agent_dbpass }}"
+    dbport: "{{ mysql_dynamic_inventory_agent_dbport }}"
+    dbuser: "{{ mysql_dynamic_inventory_agent_dbuser }}"
+    dbname: "{{ mysql_dynamic_inventory_agent_dbname }}"
+    state: present
+  register: agent
+  retries: 10
+  delay: 1
+  until: agent.rc == 0
+
+- debug: var=agent

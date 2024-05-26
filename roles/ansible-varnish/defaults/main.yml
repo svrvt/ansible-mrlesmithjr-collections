@@ -1,0 +1,18 @@
+---
+# defaults file for ansible-varnish
+
+varnish_debian_pre_reqs:
+  - apt-transport-https
+  - curl
+  - debian-archive-keyring
+  - gnupg
+
+varnish_debian_repo_info:
+  key: "{{ varnish_repo_url }}/varnish{{ varnish_major_version }}/gpgkey"
+  repo: "deb {{ varnish_repo_url }}/varnish{{ varnish_major_version }}/{{ ansible_distribution|lower }}/ {{ ansible_distribution_release|lower }} main"
+
+varnish_repo_url: https://packagecloud.io/varnishcache
+
+varnish_major_version: 5
+
+varnish_minor_version: 5.2.1

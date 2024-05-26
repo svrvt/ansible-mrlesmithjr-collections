@@ -1,0 +1,14 @@
+---
+- name: debian | Update APT Cache
+  apt:
+    update_cache: true
+    cache_valid_time: 3600
+  become: true
+
+- name: debian | Installing Python Packages
+  apt:
+    name: "{{ bootstrap_python_packages }}"
+    state: present
+  become: true
+  register: result
+  until: result is successful

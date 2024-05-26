@@ -1,0 +1,23 @@
+router id {{ bird_router_id }};
+log syslog all;
+protocol kernel {
+	scan time 60;
+	import none;
+}
+protocol device {
+	scan time 60;
+}
+
+{% if bird_bgp_config is defined %}
+{%   for item in bird_bgp_config %}
+{%     if item['host'] == inventory_hostname %}
+protocol bgp {{ item['name'] }} {
+{%       if item['import'] is defined %}
+  import {{ item['import'] }};
+{%       endif %}
+  local as {{ item['local_as'] }};
+  neighbor {{ item['neighbor'] }} as {{ item['neighbor_as'] }};
+}
+{%     endif %}
+{%   endfor %}
+{% endif %}
